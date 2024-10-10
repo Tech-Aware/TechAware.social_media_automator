@@ -23,6 +23,7 @@ class PostTweetUseCase:
         try:
             logger.debug(f"Creating Tweet entity with text: {tweet_text[:20]}...")
             tweet = Tweet(tweet_text)
+            tweet.validate()  # Ajoutez cette ligne
             logger.debug("Tweet entity created")
 
             logger.debug("Posting tweet via TwitterGateway")
