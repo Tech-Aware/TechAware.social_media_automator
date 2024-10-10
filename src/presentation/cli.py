@@ -39,7 +39,7 @@ class CLI:
         try:
             logger.debug("Lecture du fichier prompt")
             prompt = read_prompt_file("techaware_pro_prompt_for_x.txt")
-            logger.debug(f"Prompt lu depuis le fichier : {prompt[:50]}...")  # Log les 50 premiers caractères du prompt
+            logger.debug(f"Prompt lu depuis le fichier : {prompt[:50]}...")
         except FileNotFoundError as e:
             logger.error(f"Fichier prompt non trouvé : {str(e)}")
             print("Le fichier prompt n'a pas été trouvé. Utilisation d'un prompt par défaut.")
@@ -50,18 +50,14 @@ class CLI:
             prompt = "Générez un tweet intéressant sur la technologie."
 
         try:
-            if prompt:
-                logger.debug("Génération d'un tweet avec OpenAI")
-                generated_tweet = self.generate_tweet_use_case.execute(prompt)
-                logger.debug(f"Tweet généré : {generated_tweet}")
-                print(f"Tweet généré : {generated_tweet}")
-                time.sleep(5)
-                tweet_text = generated_tweet
-            else:
-                tweet_text = "Hello World !"
+            logger.debug("Génération d'un tweet avec OpenAI")
+            generated_tweet = self.generate_tweet_use_case.execute(prompt)
+            logger.debug(f"Tweet généré : {generated_tweet}")
+            print(f"Tweet généré : {generated_tweet}")
+            time.sleep(5)
 
             logger.debug("Exécution de PostTweetUseCase")
-            result = self.post_tweet_use_case.execute(tweet_text)
+            result = self.post_tweet_use_case.execute(generated_tweet)
             logger.debug(f"Résultat de l'exécution de PostTweetUseCase : {result}")
 
             print(f"Tweet posté avec succès. ID du tweet : {result['data']['id']}")
