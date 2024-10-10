@@ -15,7 +15,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(
 from unittest.mock import Mock
 from src.use_cases.post_tweet import PostTweetUseCase
 from src.domain.entities.tweet import Tweet
-from src.domain.exceptions import TwitterError, ValidationError
+from src.domain.exceptions import TwitterError, ValidationError, AutomatorError
 
 
 @pytest.fixture
@@ -45,7 +45,7 @@ def test_post_tweet_validation_error():
     use_case = PostTweetUseCase(Mock())
 
     with pytest.raises(ValidationError) as exc_info:
-        use_case.execute("     " * 50)  # Tweet too long
+        use_case.execute("      " * 50)  # Tweet too long
 
         assert "Tweet must be 280 characters or less" in str(exc_info.value)
 
@@ -65,16 +65,13 @@ def test_post_tweet_twitter_error(mock_twitter_gateway):
 
 
 def test_post_tweet_unexpected_error(mock_twitter_gateway):
-    """
-    Test handling of unexpected errors during tweet posting.
-    """
     mock_twitter_gateway.post_tweet.side_effect = Exception("Unexpected error")
     use_case = PostTweetUseCase(mock_twitter_gateway)
 
-    with pytest.raises(Exception) as exc_info:
+    with pytest.raises(AutomatorError) as exc_info:
         use_case.execute("Test tweet")
 
-    assert str(exc_info.value) == "Unexpected error"
+    assert "Unexpected error" in str(exc_info.value)
     mock_twitter_gateway.post_tweet.assert_called_once()
 
 
