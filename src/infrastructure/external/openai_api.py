@@ -31,9 +31,10 @@ class OpenAIAPI(OpenAIGateway):
                 ]
             )
             generated_tweet = response.choices[0].message.content.strip('')
-            generated_tweet = generated_tweet[1:-1]  # Supprime le premier et le dernier caractère
-            logger.debug(f"Tweet généré : {generated_tweet}")
-            return generated_tweet
+            if generated_tweet:
+                generated_tweet = generated_tweet[1:-1]  # Supprime le premier et le dernier caractère
+                logger.debug(f"Tweet généré : {generated_tweet}")
+                return generated_tweet
         except Exception as e:
             logger.error(f"Échec de la génération du tweet : {str(e)}")
             raise TweetGenerationError(f"Échec de la génération du tweet : {str(e)}")
