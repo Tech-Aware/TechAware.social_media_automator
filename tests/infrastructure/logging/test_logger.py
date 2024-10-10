@@ -19,6 +19,7 @@ sys.path.insert(0, project_root)
 
 from src.infrastructure.logging.logger import CustomLogger, ColoredFormatter, get_logger, log_method
 
+
 def test_custom_logger_creation():
     logger = CustomLogger("test_logger")
     assert isinstance(logger, logging.Logger)
