@@ -25,7 +25,7 @@ The application follows a clean architecture pattern, divided into the following
 
 1. Clone the repository:
    ```
-   git clone https://github.com/yourusername/automator.git
+   git clone https://github.com/Tech-Aware/automator.git
    cd automator
    ```
 
