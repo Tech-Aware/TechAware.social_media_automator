@@ -38,7 +38,7 @@ def test_generate_tweet(mock_openai):
     mock_client = MagicMock()
     mock_openai.return_value = mock_client
     mock_response = MagicMock()
-    mock_response.choices[0].message.content = "Generated tweet"
+    mock_response.choices[0].message.content = "\"Generated tweet\""
     mock_client.chat.completions.create.return_value = mock_response
 
     api = OpenAIAPI()
