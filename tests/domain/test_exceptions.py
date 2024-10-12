@@ -1,20 +1,18 @@
 # tests/domain/test_exceptions.py
 
 """
-Ce module contient les tests unitaires pour les exceptions personnalisées
-définies dans le module src.domain.exceptions.
+This module contains unit tests for the custom exceptions
+defined in the src.domain.exceptions module.
 
-Il vérifie que chaque type d'exception peut être levé correctement et
-teste la hiérarchie d'héritage des exceptions pour s'assurer qu'elles
-sont correctement structurées.
+It verifies that each type of exception can be raised correctly and
+tests the exception inheritance hierarchy to ensure they are properly structured.
 """
 
 import pytest
 import sys
 import os
 
-
-# Ajoute le répertoire racine du projet au chemin d'importation
+# Add the project root directory to the Python path
 project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
 sys.path.insert(0, project_root)
 
@@ -24,7 +22,8 @@ from src.domain.exceptions import (
     OpenAIError,
     TweetGenerationError,
     ConfigurationError,
-    ValidationError
+    ValidationError,
+    LinkedInError
 )
 
 
@@ -58,14 +57,19 @@ def test_validation_error():
         raise ValidationError("Test ValidationError")
 
 
+def test_linkedin_error():
+    with pytest.raises(LinkedInError):
+        raise LinkedInError("Test LinkedInError")
+
+
 def test_error_inheritance():
     assert issubclass(TwitterError, AutomatorError)
     assert issubclass(OpenAIError, AutomatorError)
     assert issubclass(TweetGenerationError, OpenAIError)
     assert issubclass(ConfigurationError, AutomatorError)
     assert issubclass(ValidationError, AutomatorError)
+    assert issubclass(LinkedInError, AutomatorError)
 
 
 if __name__ == '__main__':
     pytest.main([__file__, '-v'])
-
