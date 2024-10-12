@@ -29,3 +29,8 @@ class ConfigurationError(AutomatorError):
 
 class ValidationError(AutomatorError):
     """Raised when there's a validation error"""
+
+
+# New exception for LinkedIn
+class LinkedInError(AutomatorError):
+    """Raised when there's an error interacting with LinkedIn API"""
