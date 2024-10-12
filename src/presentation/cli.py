@@ -1,7 +1,9 @@
 # src/presentation/cli.py
 import time
 
+from src.infrastructure.external.linkedin_api import LinkedInAPI
 from src.use_cases.post_tweet import PostTweetUseCase
+from src.use_cases.post_linkedin import PostLinkedInUseCase
 from src.use_cases.generate_tweet import GenerateTweetUseCase
 from src.infrastructure.external.twitter_api import TwitterAPI
 from src.infrastructure.external.openai_api import OpenAIAPI
@@ -23,12 +25,20 @@ class CLI:
             openai_gateway = OpenAIAPI()
             logger.debug("Instance OpenAIAPI créée")
 
+            logger.debug("Création de l'instance LinkedInAPI")
+            linkedin_gateway = LinkedInAPI()
+            logger.debug("Instance LinkedInAPI créée")
+
             logger.debug("Création de l'instance PostTweetUseCase")
             self.post_tweet_use_case = PostTweetUseCase(twitter_gateway)
             logger.debug("Instance PostTweetUseCase créée")
 
             logger.debug("Création de l'instance GenerateTweetUseCase")
             self.generate_tweet_use_case = GenerateTweetUseCase(openai_gateway)
+            logger.debug("Instance GenerateTweetUseCase créée")
+
+            logger.debug("Création de l'instance GenerateTweetUseCase")
+            self.post_linked_in_use_case = PostLinkedInUseCase(linkedin_gateway)
             logger.debug("Instance GenerateTweetUseCase créée")
         except ConfigurationError as e:
             logger.error(f"Échec de l'initialisation de la CLI : {str(e)}")
@@ -37,7 +47,7 @@ class CLI:
     @log_method(logger)
     def run(self):
         try:
-            logger.debug("Lecture du fichier prompt")
+            '''logger.debug("Lecture du fichier prompt")
             prompt = read_prompt_file("techaware_pro_prompt_for_x.txt")
             logger.debug(f"Prompt lu depuis le fichier : {prompt[:50]}...")
         except FileNotFoundError as e:
@@ -53,11 +63,12 @@ class CLI:
             logger.debug("Génération d'un tweet avec OpenAI")
             generated_tweet = self.generate_tweet_use_case.execute(prompt)
             logger.debug(f"Tweet généré : {generated_tweet}")
-            print(f"Tweet généré : {generated_tweet}")
+            print(f"Tweet généré : {generated_tweet}")'''
             time.sleep(5)
 
             logger.debug("Exécution de PostTweetUseCase")
-            result = self.post_tweet_use_case.execute(generated_tweet)
+            # result = self.post_tweet_use_case.execute(generated_tweet)
+            result = self.post_linked_in_use_case.execute("Hello World")
             logger.debug(f"Résultat de l'exécution de PostTweetUseCase : {result}")
 
             print(f"Tweet posté avec succès. ID du tweet : {result['data']['id']}")
