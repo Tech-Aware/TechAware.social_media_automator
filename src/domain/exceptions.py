@@ -34,3 +34,9 @@ class ValidationError(AutomatorError):
 # New exception for LinkedIn
 class LinkedInError(AutomatorError):
     """Raised when there's an error interacting with LinkedIn API"""
+
+
+
+# Find the class LinkedInError and add the FacebookError class after it
+class FacebookError(AutomatorError):
+    """Raised when there's an error interacting with Facebook API"""
