@@ -11,12 +11,18 @@ class GenerateTweetUseCase:
         logger.debug(f"GenerateTweetUseCase initialisé avec {openai_gateway.__class__.__name__}")
 
     @log_method(logger)
-    def execute(self, prompt: str) -> str:
+    def execute(self) -> str:
         try:
-            logger.debug(f"Génération d'un tweet avec le prompt : {prompt}")
-            generated_tweet = self.openai_gateway.generate_tweet(prompt)
-            logger.debug(f"Tweet généré : {generated_tweet}")
-            return generated_tweet
+            logger.debug(f"Generating X publication")
+            x_prompt = (
+                "Generate a X (ex twitter) publication of a maximum of 250 char. The publication should be engaging, "
+                "conversational, and suitable for a general audience. "
+                "Respecting the length limit of character for X platform at 250 character maximum"
+                "Include relevant emojis where appropriate. "
+            )
+            generated_publication = self.openai_gateway.generate(x_prompt)
+            logger.debug(f"X publication generated: {generated_publication}")
+            return generated_publication
         except OpenAIError as e:
             logger.error(f"Erreur OpenAI dans GenerateTweetUseCase : {str(e)}")
             raise TweetGenerationError(f"Erreur lors de la génération du tweet : {str(e)}")

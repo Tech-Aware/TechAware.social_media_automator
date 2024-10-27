@@ -34,12 +34,12 @@ def test_openai_gateway_generate_tweet_method():
     assert hasattr(OpenAIGateway, 'generate_tweet')
 
     class ConcreteOpenAIGateway(OpenAIGateway):
-        def generate_tweet(self, prompt: str) -> str:
+        def generate(self, prompt: str) -> str:
             return "Test tweet"
 
     gateway = ConcreteOpenAIGateway()
-    assert callable(gateway.generate_tweet)
-    assert isinstance(gateway.generate_tweet("test prompt"), str)
+    assert callable(gateway.generate)
+    assert isinstance(gateway.generate("test prompt"), str)
 
 
 def test_openai_gateway_generate_tweet_raises_error():
@@ -49,12 +49,12 @@ def test_openai_gateway_generate_tweet_raises_error():
     """
 
     class ErrorOpenAIGateway(OpenAIGateway):
-        def generate_tweet(self, prompt: str) -> str:
+        def generate(self, prompt: str) -> str:
             raise OpenAIError("Test error")
 
     gateway = ErrorOpenAIGateway()
     with pytest.raises(OpenAIError):
-        gateway.generate_tweet("test prompt")
+        gateway.generate("test prompt")
 
 
 if __name__ == "__main__":

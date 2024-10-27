@@ -64,6 +64,7 @@ class CLI:
             logger.error(error_msg)
             raise AutomatorError(error_msg) from e
 
+    # todo: possibly deprecated by better openai_api integration in prompting
     @log_method(logger)
     def read_platform_prompt(self, platform: str) -> str:
         """
