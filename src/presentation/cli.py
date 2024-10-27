@@ -49,10 +49,10 @@ class CLI:
             logger.debug("Creating use case instances")
             self.post_tweet_use_case = PostTweetUseCase(twitter_gateway)
             self.post_facebook_use_case = PostFacebookUseCase(facebook_gateway)
-            self.post_linkedin_use_case = PostLinkedInUseCase(linkedin_gateway)
+            #self.post_linkedin_use_case = PostLinkedInUseCase(linkedin_gateway)
             self.generate_tweet_use_case = GenerateTweetUseCase(openai_gateway)
             self.generate_facebook_use_case = GenerateFacebookPublicationUseCase(openai_gateway)
-            self.generate_linkedin_use_case = GenerateLinkedInPostUseCase(openai_gateway)
+            # self.generate_linkedin_use_case = GenerateLinkedInPostUseCase(openai_gateway)
             logger.debug("All use case instances created")
 
         except ConfigurationError as e:
@@ -103,10 +103,16 @@ class CLI:
             # Generate and post content for each platform
 
             # Facebook
-            facebook_prompt = self.read_platform_prompt("facebook")
             logger.debug("Generating Facebook post")
-            facebook_text = self.generate_facebook_use_case.execute(facebook_prompt)
-            print(f"Generated Facebook post: {facebook_text}")
+            facebook_text = self.generate_facebook_use_case.execute()
+            logger.success("Facebook publication created successfully")
+            print(f"Generated Facebook post successfully")
+
+            # X
+            logger.debug("Generating x post")
+            x_text = self.generate_tweet_use_case.execute()
+            logger.success("X publication created successfully")
+            print(f"Generated x post successfully")
 
             # Add delay between posts
             time.sleep(5)
@@ -114,7 +120,14 @@ class CLI:
             # Post to Facebook platform
             logger.debug("Posting to Facebook")
             facebook_result = self.post_facebook_use_case.execute(facebook_text)
-            print(f"Facebook post created successfully. Post ID: {facebook_result['id']}")
+            logger.success(f"Facebook post published successfully. Post ID: {facebook_result['id']}")
+            print(f"Facebook post published successfully. Post ID: {facebook_result['id']}")
+
+            # Post to the X platform
+            logger.debug("Posting to X")
+            x_result = self.post_tweet_use_case.execute(x_text)
+            logger.success(f"X post published successfully.")
+            print(f"X post published successfully")
 
         except ValidationError as e:
             error_msg = f"Invalid content: {str(e)}"
