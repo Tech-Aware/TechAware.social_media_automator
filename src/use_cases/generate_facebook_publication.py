@@ -24,7 +24,7 @@ class GenerateFacebookPublicationUseCase:
         logger.debug(f"GenerateFacebookPublicationUseCase initialized with {openai_gateway.__class__.__name__}")
 
     @log_method(logger)
-    def execute(self, prompt: str) -> str:
+    def execute(self) -> str:
         """
         Execute the use case to generate Facebook publication content.
 
@@ -38,14 +38,13 @@ class GenerateFacebookPublicationUseCase:
             TweetGenerationError: If publication generation fails
         """
         try:
-            logger.debug(f"Generating Facebook publication with prompt: {prompt}")
+            logger.debug(f"Generating Facebook publication")
             facebook_prompt = (
                 "Generate a Facebook publication. The publication should be engaging, "
                 "conversational, and suitable for a general audience. "
                 "Include relevant emojis where appropriate. "
-                f"Context: {prompt}"
             )
-            generated_publication = self.openai_gateway.generate_tweet(facebook_prompt)
+            generated_publication = self.openai_gateway.generate(facebook_prompt)
             logger.debug(f"Facebook publication generated: {generated_publication}")
             return generated_publication
 
