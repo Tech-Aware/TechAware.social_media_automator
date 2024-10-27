@@ -42,7 +42,7 @@ def test_generate_tweet(mock_openai):
     mock_client.chat.completions.create.return_value = mock_response
 
     api = OpenAIAPI()
-    result = api.generate_tweet("Test prompt")
+    result = api.generate("Test prompt")
 
     assert result == "Generated tweet"
     mock_client.chat.completions.create.assert_called_once()
@@ -56,7 +56,7 @@ def test_generate_tweet_error(mock_openai):
 
     api = OpenAIAPI()
     with pytest.raises(TweetGenerationError):
-        api.generate_tweet("Test prompt")
+        api.generate("Test prompt")
 
 
 if __name__ == "__main__":

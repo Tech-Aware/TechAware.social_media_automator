@@ -123,7 +123,6 @@ def log_method(logger):
             try:
                 logger.debug(f"Arguments: {args}, {kwargs}")
                 result = func(*args, **kwargs)
-                logger.debug(f"Result: {result}")
                 logger.success(f"Successfully executed {func.__name__}")
                 return result
             except Exception as e:

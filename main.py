@@ -20,5 +20,6 @@ def main():
         logger.error(f"An unexpected error occurred: {str(e)}", exc_info=True)
         print(f"An unexpected error occurred. Please check the logs for more details.")
 
+
 if __name__ == "__main__":
     main()

@@ -12,7 +12,7 @@ from abc import ABC, abstractmethod
 
 class OpenAIGateway(ABC):
     @abstractmethod
-    def generate_tweet(self, prompt: str) -> str:
+    def generate(self, prompt: str) -> str:
         """
         Generate tweet content based on the given prompt using OpenAI's API.
 
