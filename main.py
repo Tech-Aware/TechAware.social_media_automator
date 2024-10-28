@@ -8,7 +8,7 @@ def main():
     try:
         logger.info("Starting Automator application")
         cli = CLI()
-        cli.run()
+        cli.menu()
         logger.info("Automator application completed successfully")
     except ConfigurationError as e:
         logger.error(f"Configuration error: {str(e)}")
