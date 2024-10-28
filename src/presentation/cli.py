@@ -93,6 +93,13 @@ class CLI:
             raise AutomatorError(error_msg) from e
 
     @log_method(logger)
+    def menu(self):
+        asking_user = input("Would you like to create a blog article ? [y/n] ")
+        if asking_user == "y":
+            print("You want to create a blog article first !")
+        else:
+            self.run()
+    @log_method(logger)
     def run(self):
         """
         Run the CLI, handling platform-specific content generation and posting.
