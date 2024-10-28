@@ -1,5 +1,6 @@
 import openai
 import re
+import random
 import PyPDF2
 import os
 from openai import OpenAI
@@ -48,19 +49,19 @@ class OpenAIAPI(OpenAIGateway):
                     elif file_name.startswith("page"):
                         if "Entreprise" in file_name:
                             topic_files.append(file_name)
-                            relevant_link[file_name] = "https://www.techaware.net/pour-les-entreprises"
+                            relevant_link[file_name] = "https://www.techaware.net/pour-les-entreprises "
                         elif "Temoignage" in file_name:
                             topic_files.append(file_name)
-                            relevant_link[file_name] = "https://www.techaware.net/temoignage-satochip"
+                            relevant_link[file_name] = "https://www.techaware.net/temoignage-satochip "
                         elif "Developpeur" in file_name:
-                            relevant_link[file_name] = "https://www.techaware.net/pour-les-developpeurs"
+                            relevant_link[file_name] = "https://www.techaware.net/pour-les-developpeurs "
                             topic_files.append(file_name)
                         elif "EtudeCasKevin" in file_name:
                             topic_files.append(file_name)
-                            relevant_link[file_name] = "https://www.techaware.net/pour-les-https://www.techaware.net/etude-de-cas"
+                            relevant_link[file_name] = "https://www.techaware.net/pour-les-https://www.techaware.net/etude-de-cas "
                         elif "accueil" in file_name:
                             topic_files.append(file_name)
-                            relevant_link[file_name] = "https://www.techaware.net/bienvenue"
+                            relevant_link[file_name] = "https://www.techaware.net/bienvenue "
 
             # Lire le contenu des fichiers de directives (guidelines)
             guideline_content = ""
@@ -82,7 +83,7 @@ class OpenAIAPI(OpenAIGateway):
 
             1. **Guidelines for Creating the Publication**: {guideline_content}
 
-            2. **Topics for the Publication**: {relevant_link} where dict key are topics and value are the relevant link to include in the final publication
+            2. **Topics for the Publication**: {random.choices([link for link in relevant_link])} where dict key are topics and value are the relevant link to include in the final publication
 
             Your task is to choose an appropriate topic from the relevant "page" files, and use the information in the "Guideline" files to ensure that the content is optimized and suitable for the platform. Always include a link to the corresponding page in the generated post to direct the audience towards more information. The link can be found in the content of the topic file itself.
 
@@ -129,8 +130,11 @@ class OpenAIAPI(OpenAIGateway):
                 # Utiliser une expression régulière pour extraire le texte entre <social_media_post> et </social_media_post>
                 match = re.search(r"<social_media_post>(.*?)</social_media_post>", generated_content, re.DOTALL)
                 if match:
+                    # Extraire le contenu entre les balises et supprimer les '**'
                     generated_content = match.group(1).strip()
-                    logger.debug(f"Contenu extrait entre les balises : {generated_content}")
+                    generated_content = re.sub(r"\*\*", "", generated_content)
+                    generated_content.strip('.')
+                    logger.debug(f"Contenu extrait entre les balises (sans '**') : {generated_content}")
                 else:
                     logger.error("Impossible de trouver le contenu entre les balises <social_media_post>")
                     raise ValueError("Le contenu généré ne contient pas les balises <social_media_post>.")

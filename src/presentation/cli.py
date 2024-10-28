@@ -93,6 +93,13 @@ class CLI:
             raise AutomatorError(error_msg) from e
 
     @log_method(logger)
+    def menu(self):
+        asking_user = input("Would you like to create a blog article ? [y/n] ")
+        if asking_user == "y":
+            print("You want to create a blog article first !")
+        else:
+            self.run()
+    @log_method(logger)
     def run(self):
         """
         Run the CLI, handling platform-specific content generation and posting.
@@ -102,27 +109,52 @@ class CLI:
         """
         try:
             # Generate and post content for each platform
+            counter = 3
+            time.sleep(1)
+            print("Waiting for facebook generation")
+            while counter != 0:
+                print("...")
+                time.sleep(1)
+                counter -= 1
 
             # Facebook
             logger.debug("Generating Facebook post")
             facebook_text = self.generate_facebook_use_case.execute()
             logger.success("Facebook publication created successfully")
-            print(f"Generated Facebook post successfully")
+            print(f"Generated Facebook post successfully: {facebook_text[0:50]}")
+            counter = 3
+            time.sleep(1)
+            print("Waiting for X tweet generation")
+            while counter != 0:
+                print("...")
+                time.sleep(1)
+                counter -= 1
 
             # X
             logger.debug("Generating x post")
             x_text = self.generate_tweet_use_case.execute()
             logger.success("X publication created successfully")
-            print(f"Generated x post successfully")
-
-            # Add delay between posts
-            time.sleep(5)
+            print(f"Generated x post successfully: {x_text[0:50]}")
+            counter = 3
+            time.sleep(1)
+            print("Posting in facebook")
+            while counter != 0:
+                print("...")
+                time.sleep(1)
+                counter -= 1
 
             # Post to Facebook platform
             logger.debug("Posting to Facebook")
             facebook_result = self.post_facebook_use_case.execute(facebook_text)
             logger.success(f"Facebook post published successfully. Post ID: {facebook_result['id']}")
             print(f"Facebook post published successfully. Post ID: {facebook_result['id']}")
+            counter = 3
+            time.sleep(1)
+            print("Posting in X")
+            while counter != 0:
+                print("...")
+                time.sleep(1)
+                counter -= 1
 
             # Post to the X platform
             logger.debug("Posting to X")
