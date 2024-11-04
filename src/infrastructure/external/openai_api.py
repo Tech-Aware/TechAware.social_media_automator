@@ -140,7 +140,7 @@ class OpenAIAPI(OpenAIGateway):
                     raise ValueError("Le contenu généré ne contient pas les balises <social_media_post>.")
                 return generated_content
             else:
-                raise TweetGenerationError("Le contenu généré est vide.")
+                raise OpenAIError("Le contenu généré est vide.")
         except Exception as e:
             logger.error(f"Échec de la génération de la publication : {str(e)}")
-            raise TweetGenerationError(f"Échec de la génération de la publication : {str(e)}")
+            raise OpenAIError(f"Échec de la génération de la publication : {str(e)}")
