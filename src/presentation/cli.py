@@ -49,10 +49,10 @@ class CLI:
             logger.debug("Creating use case instances")
             self.post_tweet_use_case = PostTweetUseCase(twitter_gateway)
             self.post_facebook_use_case = PostFacebookUseCase(facebook_gateway)
-            #self.post_linkedin_use_case = PostLinkedInUseCase(linkedin_gateway)
+            self.post_linkedin_use_case = PostLinkedInUseCase(linkedin_gateway)
             self.generate_tweet_use_case = GenerateTweetUseCase(openai_gateway)
             self.generate_facebook_use_case = GenerateFacebookPublicationUseCase(openai_gateway)
-            # self.generate_linkedin_use_case = GenerateLinkedInPostUseCase(openai_gateway)
+            self.generate_linkedin_use_case = GenerateLinkedInPostUseCase(openai_gateway)
             logger.debug("All use case instances created")
 
         except ConfigurationError as e:
@@ -124,6 +124,19 @@ class CLI:
             print(f"Generated Facebook post successfully: {facebook_text[0:50]}")
             counter = 3
             time.sleep(1)
+            print("Waiting for linkedin generation")
+            while counter != 0:
+                print("...")
+                time.sleep(1)
+                counter -= 1
+
+            # linkedin
+            logger.debug("Generating Linkedin post")
+            linkedin_text = self.generate_linkedin_use_case.execute()
+            logger.success("Linkedin publication created successfully")
+            print(f"Generated Linkedin post successfully: {linkedin_text[0:50]}")
+            counter = 3
+            time.sleep(1)
             print("Waiting for X tweet generation")
             while counter != 0:
                 print("...")
@@ -148,6 +161,19 @@ class CLI:
             facebook_result = self.post_facebook_use_case.execute(facebook_text)
             logger.success(f"Facebook post published successfully. Post ID: {facebook_result['id']}")
             print(f"Facebook post published successfully. Post ID: {facebook_result['id']}")
+            counter = 3
+            time.sleep(1)
+            print("Posting in LinkedIn")
+            while counter != 0:
+                print("...")
+                time.sleep(1)
+                counter -= 1
+
+            # post to linkedIn platform
+            logger.debug("Posting to LinkedIn")
+            linkedin_result = self.post_linkedin_use_case.execute(linkedin_text)
+            logger.success("Linkedin post published successfully")
+            print(f"Linkedin post published successfully. {linkedin_result}")
             counter = 3
             time.sleep(1)
             print("Posting in X")
