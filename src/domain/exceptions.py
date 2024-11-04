@@ -40,3 +40,20 @@ class LinkedInError(AutomatorError):
 # Find the class LinkedInError and add the FacebookError class after it
 class FacebookError(AutomatorError):
     """Raised when there's an error interacting with Facebook API"""
+
+
+# New Odoo-related exceptions
+class OdooError(AutomatorError):
+    """Base exception for Odoo-related errors"""
+
+class OdooConnectionError(OdooError):
+    """Raised when there's an error connecting to the Odoo server"""
+
+class OdooAuthenticationError(OdooError):
+    """Raised when there's an authentication error with Odoo"""
+
+class OdooValidationError(OdooError):
+    """Raised when there's a validation error with Odoo data"""
+
+class OdooPublicationError(OdooError):
+    """Raised when there's an error publishing content to Odoo"""
