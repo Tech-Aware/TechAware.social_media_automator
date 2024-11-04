@@ -44,7 +44,6 @@ class GenerateFacebookPublicationUseCase:
                 "conversational, and suitable for a general audience. "
                 "Include relevant emojis where appropriate. "
                 "Include link without any special format, writing it as https://www.webpage.net"
-
             )
             generated_publication = self.openai_gateway.generate(facebook_prompt)
             logger.debug(f"Facebook publication generated: {generated_publication}")
