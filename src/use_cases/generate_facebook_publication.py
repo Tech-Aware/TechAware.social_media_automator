@@ -8,7 +8,7 @@ the coordination between the OpenAI gateway and publication generation process.
 
 from src.interfaces.openai_gateway import OpenAIGateway
 from src.infrastructure.logging.logger import logger, log_method
-from src.domain.exceptions import AutomatorError, OpenAIError, TweetGenerationError
+from src.domain.exceptions import AutomatorError, OpenAIError, FacebookGenerationError
 
 
 class GenerateFacebookPublicationUseCase:
@@ -38,12 +38,26 @@ class GenerateFacebookPublicationUseCase:
             TweetGenerationError: If publication generation fails
         """
         try:
-            logger.debug(f"Generating Facebook publication")
+            guidelines = """
+                        Here are the guidelines for this Facebook post:
+
+                        1. **Engaging opener**: Start with an interesting or emotional sentence to immediately capture attention.
+                        2. **Clarity and conciseness**: Use clear sentences and short paragraphs for easy readability.
+                        3. **Value for the reader**: Share helpful information, tips, or insights relevant to the audience.
+                        4. **Call to action**: End with a prompt encouraging readers to like, comment, share, or tag friends.
+                        5. **Relevant hashtags**: Add a few relevant hashtags, but keep it natural and avoid overloading with tags.
+                        6. **Friendly and authentic tone**: Keep a professional yet friendly tone, with a personal touch or experience if relevant.
+
+                        The post should be written in French, with appropriate emojis to enhance readability. No special formatting is required for links, such as https://www.webpage.net.
+                        """
+
+            logger.debug("Generating Facebook publication")
+
             facebook_prompt = (
-                "Generate a Facebook publication. The publication should be engaging, "
-                "conversational, and suitable for a general audience. "
-                "Include relevant emojis where appropriate. "
-                "Include link without any special format, writing it as https://www.webpage.net"
+                "Generate a Facebook post following these guidelines. "
+                "The post should be engaging, conversational, and suitable for a general audience, written in French. "
+                "Include relevant emojis if suitable. "
+                f"{guidelines}"
             )
             generated_publication = self.openai_gateway.generate(facebook_prompt)
             logger.debug(f"Facebook publication generated: {generated_publication}")
@@ -51,7 +65,7 @@ class GenerateFacebookPublicationUseCase:
 
         except OpenAIError as e:
             logger.error(f"OpenAI error in GenerateFacebookPublicationUseCase: {str(e)}")
-            raise TweetGenerationError(f"Error generating Facebook publication: {str(e)}")
+            raise FacebookGenerationError(f"Error generating Facebook publication: {str(e)}")
         except Exception as e:
             logger.error(f"Unexpected error in GenerateFacebookPublicationUseCase: {str(e)}")
-            raise TweetGenerationError(f"Unexpected error generating Facebook publication: {str(e)}")
+            raise FacebookGenerationError(f"Unexpected error generating Facebook publication: {str(e)}")
