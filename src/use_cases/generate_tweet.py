@@ -32,6 +32,7 @@ class GenerateTweetUseCase:
                 "The post should be engaging, conversational, and suitable for a general audience, written in French. "
                 "Include relevant emojis if suitable. "
                 f"{guidelines}"
+                "Example output : 🚀 Découvrez comment Kevin a transformé sa carrière grâce à notre étude de cas! Des insights précieux pour tout professionnel tech. 🌟 Lisez l'intégralité ici: https://techaware.net/etude-de-cas #Tech #Carrière #Innovation"
             )
             generated_publication = self.openai_gateway.generate(x_prompt)
             logger.debug(f"X publication generated: {generated_publication}")

@@ -60,6 +60,21 @@ class GenerateLinkedInPostUseCase:
                 "output language in french."
                 "Include link without any special format, writing it as https://www.webpage.net."
                 f"{guidelines}"
+                f"""Example output : 🚀 Transformez votre entreprise avec Tech Aware! 🌐
+
+Découvrez comment notre collaboration avec les meilleures entreprises technologiques propulse le développement professionnel et les innovations. Chez Tech Aware, nous vous connectons avec des experts de l'industrie pour donner vie à vos projets avec efficacité et précision.
+
+🔗 Pourquoi choisir Tech Aware?
+- 🌟 Expertise reconnue: Nos partenaires sont rigoureusement sélectionnés pour leur savoir-faire technique et leur approche stratégique.
+- 🛠️ Solutions sur mesure: Adaptabilité et personnalisation pour répondre aux besoins spécifiques de votre entreprise.
+- 👥 Développement de compétences: Accès continu à la formation et au mentorat pour garantir des résultats exceptionnels.
+
+🔍 Découvrez plus sur l'impact de nos collaborations et comment nous pouvons dynamiser votre portefeuille de projets. 
+
+Visitez notre page ici:
+https://lnkd.in/eMeJkkMA 
+
+Rejoignez les leaders du secteur qui façonnent l'avenir avec Tech Aware! 💼📈"""
             )
             generated_publication = self.openai_gateway.generate(linkedin_prompt)
             logger.debug(f"LinkedIn publication generated: {generated_publication}")

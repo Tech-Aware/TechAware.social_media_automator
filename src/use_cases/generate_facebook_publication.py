@@ -58,6 +58,14 @@ class GenerateFacebookPublicationUseCase:
                 "The post should be engaging, conversational, and suitable for a general audience, written in French. "
                 "Include relevant emojis if suitable. "
                 f"{guidelines}"
+                f"""Example output :  🚀 À la recherche d'une évolution professionnelle? Tech Aware est votre partenaire idéal! 🌟
+Nous comprenons que le chemin vers le succès professionnel est souvent semé d'embûches. C'est pourquoi chez Tech Aware, nous nous engageons à vous fournir des ressources et des conseils précieux pour propulser votre carrière. 🌐 Découvrez comment nous pouvons vous aider à atteindre vos objectifs professionnels sur notre page dédiée:  https://www.techaware.net/pour-les-entreprises 
+🔍 Que trouverez-vous chez Tech Aware ?
+- Des conseils d'experts sur les tendances du marché
+- Des outils pour améliorer vos compétences techniques
+- Une communauté de professionnels comme vous
+👍 Aimez-vous les nouvelles opportunités ? Commentez avec vos attentes professionnelles ou partagez ce post avec vos amis qui pourraient être intéressés! 📢
+#Carrière #Innovation #TechAware #EmploiTech"""
             )
             generated_publication = self.openai_gateway.generate(facebook_prompt)
             logger.debug(f"Facebook publication generated: {generated_publication}")
