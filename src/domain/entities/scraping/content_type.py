@@ -1,13 +1,7 @@
-# Location: src/domain/entities/scraping/content_type.py
+# Location: ./src/domain/entities/scraping/content_type.py
 
-"""
-This module defines the ContentType enumeration used to categorize different types
-of content that can be scraped from the TechAware website. It provides a standardized
-way to specify content types across the application, with proper error handling
-and logging.
-"""
-
-from enum import Enum, auto
+from enum import Enum
+from urllib.parse import urljoin
 from src.infrastructure.logging.logger import logger, log_method
 from src.domain.exceptions import ValidationError
 
@@ -15,20 +9,13 @@ from src.domain.exceptions import ValidationError
 class ContentType(Enum):
     """
     Enumeration of content types available for scraping from TechAware website.
-
-    Attributes:
-        BUSINESS: Business-oriented content about TechAware's services for companies
-        DEVELOPER: Content targeted at developers and career changers
-        CASE_STUDY: Detailed case studies of successful projects
-        TESTIMONIAL: Client testimonials and success stories
-        BLOG: Blog articles and technical content
     """
 
-    BUSINESS = auto()
-    DEVELOPER = auto()
-    CASE_STUDY = auto()
-    TESTIMONIAL = auto()
-    BLOG = auto()
+    BUSINESS = "business"
+    DEVELOPER = "developer"
+    CASE_STUDY = "case_study"
+    TESTIMONIAL = "testimonial"
+    COURSE = "course"
 
     @log_method(logger)
     def get_url_path(self) -> str:
@@ -46,15 +33,35 @@ class ContentType(Enum):
             ContentType.DEVELOPER: "/pour-les-developpeurs",
             ContentType.CASE_STUDY: "/etude-de-cas",
             ContentType.TESTIMONIAL: "/temoignage-satochip",
-            ContentType.BLOG: "/blog"
+            ContentType.COURSE: "/slide"
         }
 
         try:
-            url_path = url_paths[self]
-            logger.debug(f"Retrieved URL path for {self.name}: {url_path}")
-            return url_path
+            return url_paths[self]
         except KeyError:
             error_msg = f"URL path not defined for content type: {self.name}"
+            logger.error(error_msg)
+            raise ValidationError(error_msg)
+
+    @log_method(logger)
+    def get_full_url(self) -> str:
+        """
+        Get the complete URL for the content type.
+
+        Returns:
+            str: The complete URL including base URL and path
+
+        Raises:
+            ValidationError: If the URL construction fails
+        """
+        base_url = "https://www.techaware.net"
+        try:
+            path = self.get_url_path()
+            full_url = urljoin(base_url, path)
+            logger.debug(f"Generated full URL for {self.name}: {full_url}")
+            return full_url
+        except Exception as e:
+            error_msg = f"Failed to construct full URL for {self.name}: {str(e)}"
             logger.error(error_msg)
             raise ValidationError(error_msg)
 
@@ -74,7 +81,7 @@ class ContentType(Enum):
             ContentType.DEVELOPER: ["practical_experience", "mentorship", "community"],
             ContentType.CASE_STUDY: ["success_story", "transformation", "growth"],
             ContentType.TESTIMONIAL: ["client_success", "project_delivery", "satisfaction"],
-            ContentType.BLOG: ["technical_expertise", "industry_insights", "best_practices"]
+            ContentType.COURSE: ["technical_expertise", "industry_insights", "best_practices"]
         }
 
         try:
@@ -102,7 +109,7 @@ class ContentType(Enum):
             ContentType.DEVELOPER: ["real projects", "expert guidance", "peer support"],
             ContentType.CASE_STUDY: ["proven results", "successful transitions", "real impact"],
             ContentType.TESTIMONIAL: ["client satisfaction", "project success", "team integration"],
-            ContentType.BLOG: ["technical insights", "industry trends", "practical solutions"]
+            ContentType.COURSE: ["technical insights", "industry trends", "practical solutions"]
         }
 
         try:

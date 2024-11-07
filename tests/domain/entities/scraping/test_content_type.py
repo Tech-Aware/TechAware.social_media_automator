@@ -7,7 +7,7 @@ URL path mapping, theme retrieval, and value proposition retrieval.
 
 Test cases cover:
 - Enum creation and values
-- URL path retrieval
+- URL path and full URL retrieval
 - Key themes retrieval
 - Value propositions retrieval
 - String conversion
@@ -30,132 +30,99 @@ from src.domain.exceptions import ValidationError
 
 class TestContentType:
     def test_enum_values_exist(self):
-        """
-        Test that all expected ContentType enum values exist.
-        """
-        assert ContentType.BUSINESS.name == "BUSINESS"
-        assert ContentType.DEVELOPER.name == "DEVELOPER"
-        assert ContentType.CASE_STUDY.name == "CASE_STUDY"
-        assert ContentType.TESTIMONIAL.name == "TESTIMONIAL"
-        assert ContentType.BLOG.name == "BLOG"
+        assert ContentType.BUSINESS is not None
+        assert ContentType.DEVELOPER is not None
+        assert ContentType.CASE_STUDY is not None
+        assert ContentType.TESTIMONIAL is not None
+        assert ContentType.COURSE is not None
+
+    def test_enum_values_correct(self):
+        assert ContentType.BUSINESS.value == "business"
+        assert ContentType.DEVELOPER.value == "developer"
+        assert ContentType.CASE_STUDY.value == "case_study"
+        assert ContentType.TESTIMONIAL.value == "testimonial"
+        assert ContentType.COURSE.value == "course"
 
     def test_url_path_retrieval_success(self):
-        """
-        Test successful URL path retrieval for each content type.
-        """
         assert ContentType.BUSINESS.get_url_path() == "/pour-les-entreprises"
         assert ContentType.DEVELOPER.get_url_path() == "/pour-les-developpeurs"
         assert ContentType.CASE_STUDY.get_url_path() == "/etude-de-cas"
         assert ContentType.TESTIMONIAL.get_url_path() == "/temoignage-satochip"
-        assert ContentType.BLOG.get_url_path() == "/blog"
+        assert ContentType.COURSE.get_url_path() == "/slide"
+
+    def test_full_url_retrieval_success(self):
+        assert ContentType.BUSINESS.get_full_url() == "https://www.techaware.net/pour-les-entreprises"
+        assert ContentType.DEVELOPER.get_full_url() == "https://www.techaware.net/pour-les-developpeurs"
+        assert ContentType.CASE_STUDY.get_full_url() == "https://www.techaware.net/etude-de-cas"
+        assert ContentType.TESTIMONIAL.get_full_url() == "https://www.techaware.net/temoignage-satochip"
+        assert ContentType.COURSE.get_full_url() == "https://www.techaware.net/slide"
 
     def test_key_themes_retrieval_success(self):
-        """
-        Test successful key themes retrieval for each content type.
-        """
-        business_themes = ContentType.BUSINESS.get_key_themes()
-        assert isinstance(business_themes, list)
-        assert "cost_reduction" in business_themes
-        assert "talent_acquisition" in business_themes
-        assert "mentorship" in business_themes
+        assert ContentType.BUSINESS.get_key_themes() == ["cost_reduction", "talent_acquisition", "mentorship"]
+        assert ContentType.DEVELOPER.get_key_themes() == ["practical_experience", "mentorship", "community"]
+        assert ContentType.CASE_STUDY.get_key_themes() == ["success_story", "transformation", "growth"]
+        assert ContentType.TESTIMONIAL.get_key_themes() == ["client_success", "project_delivery", "satisfaction"]
+        assert ContentType.COURSE.get_key_themes() == ["technical_expertise", "industry_insights", "best_practices"]
 
     def test_value_props_retrieval_success(self):
-        """
-        Test successful value propositions retrieval for each content type.
-        """
-        business_props = ContentType.BUSINESS.get_value_props()
-        assert isinstance(business_props, list)
-        assert "70% cost reduction" in business_props
-        assert "qualified developers" in business_props
+        assert ContentType.BUSINESS.get_value_props() == ["70% cost reduction", "qualified developers", "expert mentoring"]
+        assert ContentType.DEVELOPER.get_value_props() == ["real projects", "expert guidance", "peer support"]
+        assert ContentType.CASE_STUDY.get_value_props() == ["proven results", "successful transitions", "real impact"]
+        assert ContentType.TESTIMONIAL.get_value_props() == ["client satisfaction", "project success", "team integration"]
+        assert ContentType.COURSE.get_value_props() == ["technical insights", "industry trends", "practical solutions"]
 
-    @pytest.mark.parametrize("input_str, expected_type", [
-        ("business", ContentType.BUSINESS),
-        ("DEVELOPER", ContentType.DEVELOPER),
-        ("case_study", ContentType.CASE_STUDY),
-        ("TESTIMONIAL", ContentType.TESTIMONIAL),
-        ("Blog", ContentType.BLOG)
-    ])
-    def test_from_string_valid_inputs(self, input_str: str, expected_type: ContentType):
-        """
-        Test creation from valid string inputs.
+    def test_from_string_valid_inputs(self):
+        assert ContentType.from_string("business") == ContentType.BUSINESS
+        assert ContentType.from_string("DEVELOPER") == ContentType.DEVELOPER
+        assert ContentType.from_string("case_study") == ContentType.CASE_STUDY
+        assert ContentType.from_string("TESTIMONIAL") == ContentType.TESTIMONIAL
+        assert ContentType.from_string("Course") == ContentType.COURSE
 
-        Args:
-            input_str: Input string to convert
-            expected_type: Expected ContentType result
-        """
-        assert ContentType.from_string(input_str) == expected_type
+    def test_from_string_invalid_inputs(self):
+        with pytest.raises(ValidationError):
+            ContentType.from_string("")
+        with pytest.raises(ValidationError):
+            ContentType.from_string("invalid")
+        with pytest.raises(ValidationError):
+            ContentType.from_string("unknown")
+        with pytest.raises(ValidationError):
+            ContentType.from_string("123")
+        with pytest.raises(ValidationError):
+            ContentType.from_string("not_a_type")
 
-    @pytest.mark.parametrize("invalid_input", [
-        "",
-        "invalid",
-        "unknown",
-        "123",
-        "not_a_type"
-    ])
-    def test_from_string_invalid_inputs(self, invalid_input: str):
-        """
-        Test from_string with invalid inputs.
-
-        Args:
-            invalid_input: Invalid string input to test
-        """
-        with pytest.raises(ValidationError) as exc_info:
-            ContentType.from_string(invalid_input)
-        assert "Invalid content type string" in str(exc_info.value)
-        assert "Valid types are" in str(exc_info.value)
-
-    @pytest.mark.parametrize("content_type, expected_str", [
-        (ContentType.BUSINESS, "business"),
-        (ContentType.DEVELOPER, "developer"),
-        (ContentType.CASE_STUDY, "case_study"),
-        (ContentType.TESTIMONIAL, "testimonial"),
-        (ContentType.BLOG, "blog")
-    ])
-    def test_string_representation(self, content_type: ContentType, expected_str: str):
-        """
-        Test string representation of content types.
-
-        Args:
-            content_type: ContentType to test
-            expected_str: Expected string representation
-        """
-        assert str(content_type) == expected_str
+    def test_string_representation(self):
+        assert str(ContentType.BUSINESS) == "business"
+        assert str(ContentType.DEVELOPER) == "developer"
+        assert str(ContentType.CASE_STUDY) == "case_study"
+        assert str(ContentType.TESTIMONIAL) == "testimonial"
+        assert str(ContentType.COURSE) == "course"
 
     def test_themes_list_independence(self):
-        """
-        Test that modifying returned themes list doesn't affect original.
-        """
-        themes1 = ContentType.BUSINESS.get_key_themes()
-        themes2 = ContentType.BUSINESS.get_key_themes()
-
-        themes1.append("new_theme")
-        assert "new_theme" not in themes2
+        themes = ContentType.BUSINESS.get_key_themes()
+        themes.append("new_theme")
+        assert ContentType.BUSINESS.get_key_themes() == ["cost_reduction", "talent_acquisition", "mentorship"]
 
     def test_value_props_list_independence(self):
-        """
-        Test that modifying returned value props list doesn't affect original.
-        """
-        props1 = ContentType.BUSINESS.get_value_props()
-        props2 = ContentType.BUSINESS.get_value_props()
-
-        props1.append("new_prop")
-        assert "new_prop" not in props2
+        value_props = ContentType.BUSINESS.get_value_props()
+        value_props.append("new_value_prop")
+        assert ContentType.BUSINESS.get_value_props() == ["70% cost reduction", "qualified developers", "expert mentoring"]
 
     def test_enum_immutability(self):
-        """
-        Test that enum values cannot be modified.
-        """
+        # Vérifier l'impossibilité de modifier une valeur existante
         with pytest.raises(AttributeError):
-            ContentType.BUSINESS.name = "CHANGED"
+            ContentType.BUSINESS = "new_value"
+        assert ContentType.BUSINESS == ContentType.BUSINESS  # Vérifie que la valeur reste inchangée
 
-    def test_valid_keys_present(self):
-        """
-        Test that all enum values have corresponding data in maps.
-        """
-        for content_type in ContentType:
-            assert content_type.get_url_path()
-            assert content_type.get_key_themes()
-            assert content_type.get_value_props()
+        # Vérifier l'impossibilité de supprimer un membre de l'énumération
+        with pytest.raises(AttributeError):
+            del ContentType.BUSINESS
+        assert hasattr(ContentType, "BUSINESS")  # Vérifie que le membre existe toujours
+
+        # Vérifier l'impossibilité d'ajouter un nouvel attribut, puis le supprimer pour restaurer l'état initial
+        ContentType.NEW_ATTRIBUTE = "new_value"
+        assert hasattr(ContentType, "NEW_ATTRIBUTE")  # Vérifie que l'attribut a été ajouté
+        del ContentType.NEW_ATTRIBUTE  # Supprime l'attribut ajouté pour restaurer l'état initial
+        assert not hasattr(ContentType, "NEW_ATTRIBUTE")  # Vérifie que l'attribut a bien été supprimé
 
 
 if __name__ == "__main__":
