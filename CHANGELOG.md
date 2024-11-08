@@ -59,6 +59,8 @@ All notable changes to this project will be documented in this file.
 
 ### Documentation
 
+- (readme) cancel #TEST line (f2e4fff1)
+- update changelog [skip ci] (75a319a0)
 - (changelog) add historical changelog content (4da8935e)
 - update changelog [skip ci] (be496825)
 - (readme/requirements) updated according to last implementation (0979018b)
