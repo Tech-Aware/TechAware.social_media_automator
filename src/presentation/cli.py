@@ -1,10 +1,9 @@
-# Location: src/presentation/cli.py
+# src/presentation/cli.py
 
 """
 This module implements the Command Line Interface (CLI) for the social media automator.
 It handles user interaction and coordinates the execution of various use cases for
-posting content to different social media platforms (Twitter, Facebook, LinkedIn),
-using platform-specific prompts for content generation.
+posting content to different social media platforms (Twitter, Facebook, LinkedIn).
 """
 
 import time
@@ -19,7 +18,6 @@ from src.infrastructure.external.facebook_api import FacebookAPI
 from src.infrastructure.external.linkedin_api import LinkedInAPI
 from src.infrastructure.external.openai_api import OpenAIAPI
 from src.infrastructure.logging.logger import logger, log_method
-from src.infrastructure.utils.file_reader import read_prompt_file
 from src.domain.exceptions import (
     AutomatorError, TwitterError, FacebookError, LinkedInError,
     ConfigurationError, ValidationError, OpenAIError,
@@ -64,48 +62,21 @@ class CLI:
             logger.error(error_msg)
             raise AutomatorError(error_msg) from e
 
-    # todo: possibly deprecated by better openai_api integration in prompting
-    @log_method(logger)
-    def read_platform_prompt(self, platform: str) -> str:
-        """
-        Read the prompt file for a specific platform.
-
-        Args:
-            platform (str): The platform name ('twitter', 'facebook', or 'linkedin')
-
-        Returns:
-            str: The prompt content, or a default prompt if reading fails
-
-        Raises:
-            AutomatorError: If there's an error reading the prompt file
-        """
-        try:
-            logger.debug(f"Reading prompt file for {platform}")
-            return read_prompt_file(platform)
-        except (FileNotFoundError, IOError) as e:
-            error_msg = f"Error reading {platform} prompt file: {str(e)}"
-            logger.warning(error_msg)
-            logger.info(f"Using default prompt for {platform}")
-            return f"Generate an engaging {platform} post about technology."
-        except Exception as e:
-            error_msg = f"Unexpected error reading prompt file for {platform}: {str(e)}"
-            logger.error(error_msg)
-            raise AutomatorError(error_msg) from e
-
     @log_method(logger)
     def menu(self):
+        """Display the menu and handle user input."""
         asking_user = input("Would you like to create a blog article ? [y/n] ")
         if asking_user == "y":
             print("You want to create a blog article first !")
         else:
             self.run()
+
     @log_method(logger)
     def run(self):
         """
         Run the CLI, handling platform-specific content generation and posting.
-
         This method handles the entire workflow of generating and posting content
-        to multiple social media platforms, with appropriate error handling for each step.
+        to multiple social media platforms.
         """
         try:
             # Generate and post content for each platform
@@ -130,7 +101,7 @@ class CLI:
                 time.sleep(1)
                 counter -= 1
 
-            # linkedin
+            # LinkedIn
             logger.debug("Generating Linkedin post")
             linkedin_text = self.generate_linkedin_use_case.execute()
             logger.success("Linkedin publication created successfully")
@@ -156,7 +127,7 @@ class CLI:
                 time.sleep(1)
                 counter -= 1
 
-            # Post to Facebook platform
+            # Post to platforms
             logger.debug("Posting to Facebook")
             facebook_result = self.post_facebook_use_case.execute(facebook_text)
             logger.success(f"Facebook post published successfully. Post ID: {facebook_result['id']}")
@@ -169,7 +140,6 @@ class CLI:
                 time.sleep(1)
                 counter -= 1
 
-            # post to linkedIn platform
             logger.debug("Posting to LinkedIn")
             linkedin_result = self.post_linkedin_use_case.execute(linkedin_text)
             logger.success("Linkedin post published successfully")
@@ -182,7 +152,6 @@ class CLI:
                 time.sleep(1)
                 counter -= 1
 
-            # Post to the X platform
             logger.debug("Posting to X")
             x_result = self.post_tweet_use_case.execute(x_text)
             logger.success(f"X post published successfully.")
