@@ -36,6 +36,13 @@ class LinkedInError(AutomatorError):
     """Raised when there's an error interacting with LinkedIn API"""
 
 
+class LinkedInGenerationError(OpenAIError):
+    """Raised when there's an error generating a linkedIn publication using OpenAI"""
+
+
+class FacebookGenerationError(OpenAIError):
+    """Raised when there's an error generating a linkedIn publication using OpenAI"""
+
 
 # Find the class LinkedInError and add the FacebookError class after it
 class FacebookError(AutomatorError):
