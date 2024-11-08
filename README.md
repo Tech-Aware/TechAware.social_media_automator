@@ -23,10 +23,6 @@ automator/
 ├── src/
 │   ├── domain/
 │   │   ├── entities/
-│   │   │   ├── scraping/
-│   │   │   │   ├── __init__.py
-│   │   │   │   ├── content_type.py                   # Implemented
-│   │   │   │   └── scraped_content.py               # To be implemented
 │   │   │   ├── __init__.py
 │   │   │   ├── tweet.py
 │   │   │   ├── facebook_publication.py
@@ -53,12 +49,9 @@ automator/
 │   │   ├── logging/
 │   │   │   ├── __init__.py
 │   │   │   └── logger.py
-│   │   ├── scraping/                                # New module from architecture changes
-│   │   │   ├── __init__.py                         # To be implemented
-│   │   │   └── techaware_scraper.py                # To be implemented
-│   │   ├── prompting/                              # New module from architecture changes
-│   │   │   ├── __init__.py                         # To be implemented
-│   │   │   └── prompt_builder.py                   # To be implemented
+│   │   ├── prompting/                              # Implemented
+│   │   │   ├── __init__.py                         # Implemented
+│   │   │   └── prompt_builder.py                   # Implemented
 │   │   └── utils/
 │   │       ├── __init__.py
 │   │       └── file_reader.py
@@ -69,8 +62,7 @@ automator/
 │   │   ├── linkedin_gateway.py
 │   │   ├── openai_gateway.py
 │   │   ├── odoo_gateway.py
-│   │   ├── scraping_gateway.py                     # To be implemented
-│   │   └── prompt_builder_gateway.py               # To be implemented
+│   │   └── prompt_builder_gateway.py               # Implemented
 │   ├── presentation/
 │   │   ├── __init__.py
 │   │   └── cli.py
@@ -87,10 +79,6 @@ automator/
 └── tests/
     ├── domain/
     │   ├── entities/
-    │   │   ├── scraping/
-    │   │   │   ├── __init__.py
-    │   │   │   ├── test_content_type.py            # Implemented
-    │   │   │   └── test_scraped_content.py         # To be implemented
     │   │   ├── test_tweet.py
     │   │   ├── test_facebook_publication.py
     │   │   ├── test_linkedin_publication.py
@@ -110,10 +98,8 @@ automator/
     │   │   ├── test_linkedin_api.py
     │   │   ├── test_openai_api.py
     │   │   └── test_odoo_api.py
-    │   ├── scraping/                               # New test module
-    │   │   └── test_techaware_scraper.py           # To be implemented
-    │   ├── prompting/                              # New test module
-    │   │   └── test_prompt_builder.py              # To be implemented
+    │   ├── prompting/                              # Implemented
+    │   │   └── test_prompt_builder.py              # Implemented
     │   └── logging/
     │       └── test_logger.py
     ├── interfaces/
@@ -122,8 +108,7 @@ automator/
     │   ├── test_linkedin_gateway.py
     │   ├── test_openai_gateway.py
     │   ├── test_odoo_gateway.py
-    │   ├── test_scraping_gateway.py                # To be implemented
-    │   └── test_prompt_builder_gateway.py          # To be implemented
+    │   └── test_prompt_builder_gateway.py          # Implemented
     ├── presentation/
     │   └── test_cli.py
     └── use_cases/

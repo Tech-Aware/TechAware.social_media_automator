@@ -3,3 +3,4 @@ python-dotenv>=1.0.0  # For environment variables in environment_twitter.py, env
 requests>=2.31.0  # For API calls in facebook_api.py and linkedin_api.py
 requests-oauthlib>=1.3.1  # For Twitter OAuth in twitter_api.py
 openai>=1.12.0  # For OpenAI integration in openai_api.py
+PyPDF2~=3.0.1
