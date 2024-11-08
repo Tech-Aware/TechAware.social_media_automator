@@ -1,5 +1,5 @@
 # TechAware Social Media Automator
-
+# TEST
 ## Overview
 TechAware Social Media Automator is a sophisticated content generation and publishing system designed to manage social media presence and blog content. It leverages OpenAI's GPT models, web scraping, and platform-specific optimization to create engaging, brand-consistent content across multiple platforms.
 
