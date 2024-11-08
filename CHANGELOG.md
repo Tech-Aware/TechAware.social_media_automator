@@ -13,8 +13,6 @@ All notable changes to this project will be documented in this file.
 - (use_cases) change prompt call for improve performance (a89e66f3)
 - (prompt_builder_gateway) change prompt method for improve performance (778e59bb)
 - (prompt_builder) change prompt method for improve performance (d7e32fb4)
-- (content_type/test_content_type) change url to join base url (67441e1f)
-- (content_type/test_content_type) add scraper content for techaware.net/webpage (1ce51958)
 - (uses_cases) add more prompt details (WIP_prompting_scrapping) (0660a22e)
 - (uses_cases) Enhance IA guidelines in prompt (22a83f3c)
 - (exceptions) add new exceptions for odoo next release (b79cbe35)
