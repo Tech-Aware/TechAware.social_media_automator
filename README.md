@@ -6,7 +6,7 @@ TechAware Social Media Automator is a sophisticated content generation and publi
 ## Features
 - Multi-platform content generation and publishing
 - Platform-specific content optimization
-- Automated content scheduling
+- Automated cgit push origin developontent scheduling
 - Brand voice consistency
 - SEO optimization for blog content
 - Content scraping and analysis
