@@ -1,50 +1,74 @@
 # src/use_cases/generate_tweet.py
 
+import random
+
 from src.interfaces.openai_gateway import OpenAIGateway
+from src.infrastructure.prompting.prompt_builder import PromptBuilder
 from src.infrastructure.logging.logger import logger, log_method
 from src.domain.exceptions import AutomatorError, OpenAIError, TweetGenerationError
+
 
 class GenerateTweetUseCase:
     @log_method(logger)
     def __init__(self, openai_gateway: OpenAIGateway):
-        self.openai_gateway = openai_gateway
-        logger.debug(f"GenerateTweetUseCase initialisé avec {openai_gateway.__class__.__name__}")
+        """
+        Initialize the use case with OpenAI gateway and PromptBuilder.
+
+        Args:
+            openai_gateway (OpenAIGateway): The gateway to interact with OpenAI
+        """
+        try:
+            self.openai_gateway = openai_gateway
+            self.prompt_builder = PromptBuilder()
+            logger.debug(f"GenerateTweetUseCase initialized with {openai_gateway.__class__.__name__}")
+        except Exception as e:
+            logger.error(f"Failed to initialize tweet generator: {str(e)}")
+            raise TweetGenerationError(f"Initialization failed: {str(e)}")
 
     @log_method(logger)
     def execute(self) -> str:
+        """
+        Execute the use case to generate tweet content.
+
+        Returns:
+            str: The generated tweet content
+
+        Raises:
+            TweetGenerationError: If tweet generation fails
+        """
         try:
-            guidelines = """
-                        Here are the guidelines for this X (formerly Twitter) post with a maximum of 250 characters, leveraging a premium subscription:
+            topic_category = ['business', 'developer', 'slides']
+            random_topic = random.choice(topic_category)
+            # Reset any previous configuration
+            self.prompt_builder.reset()
 
-                        1. **Catchy start**: Begin with a short, impactful sentence that quickly grabs attention.
-                        2. **Value and relevance**: Share an insight, fact, or tip to engage the audience immediately.
-                        3. **Conciseness**: Keep the message concise and easy to digest, using the extended character limit only if necessary.
-                        4. **Call to action**: End with a prompt to reply, retweet, or follow.
-                        5. **Hashtags and tags**: Add up to 3 relevant hashtags for discoverability, and tag any relevant accounts to increase reach.
-                        6. **Professional yet authentic tone**: Use a tone that’s professional but personal, possibly with a personal insight or experience.
-
-                        The post should be written in French, with appropriate emojis to enhance readability. No special formatting is required for links, such as https://www.webpage.net.
-                        """
-
-            logger.debug("Generating X publication")
-            x_prompt = (
-                "Generate a 250-character X (formerly Twitter) post following these guidelines. "
-                "The post should be engaging, conversational, and suitable for a general audience, written in French. "
-                "Include relevant emojis if suitable. "
-                f"{guidelines}"
-                "Example output : 🚀 Découvrez comment Kevin a transformé sa carrière grâce à notre étude de cas! Des insights précieux pour tout professionnel tech. 🌟 Lisez l'intégralité ici: https://techaware.net/etude-de-cas #Tech #Carrière #Innovation"
+            # Configure and build the prompt
+            prompt = (self.prompt_builder
+                      .set_platform_and_topic_category('twitter', random_topic)
+                      .add_custom_instructions(
+                "Ensure the tweet is attention-grabbing and concise. "
+                "Maximum 250 characters including hashtags. "
+                "Include 2-3 relevant hashtags and make every word count. "
+                "Focus on immediate value and shareability."
             )
-            generated_publication = self.openai_gateway.generate(x_prompt)
-            logger.debug(f"X publication generated: {generated_publication}")
+                      .build())
 
-            if len(generated_publication) > 250:
-                logger.warning("Tweet length invalid ! must be 250 char max ! Trying again")
-                self.execute()
-            else:
-                return generated_publication
+            logger.debug("Prompt built successfully, generating tweet")
+
+            # Generate the tweet using OpenAI
+            generated_tweet = self.openai_gateway.generate(prompt)
+            logger.debug(f"Tweet generated successfully: {generated_tweet}")
+
+            # Vérifier la longueur du tweet
+            if len(generated_tweet) > 280:
+                logger.warning(f"Generated tweet exceeds 250 characters ({len(generated_tweet)}), retrying...")
+                return self.execute()  # Recursive retry
+
+            return generated_tweet
+
         except OpenAIError as e:
-            logger.error(f"Erreur OpenAI dans GenerateTweetUseCase : {str(e)}")
-            raise TweetGenerationError(f"Erreur lors de la génération du tweet : {str(e)}")
+            logger.error(f"OpenAI error in GenerateTweetUseCase: {str(e)}")
+            raise TweetGenerationError(f"Error generating tweet: {str(e)}")
         except Exception as e:
-            logger.error(f"Erreur inattendue dans GenerateTweetUseCase : {str(e)}")
-            raise TweetGenerationError(f"Erreur inattendue lors de la génération du tweet : {str(e)}")
+            logger.error(f"Unexpected error in GenerateTweetUseCase: {str(e)}")
+            raise TweetGenerationError(f"Unexpected error generating tweet: {str(e)}")

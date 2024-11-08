@@ -1,12 +1,7 @@
-# Location: src/use_cases/generate_linkedin_post.py
-
-"""
-This module implements the GenerateLinkedInPostUseCase class, which encapsulates
-the business logic for generating LinkedIn posts using OpenAI. It handles
-the coordination between the OpenAI gateway and post generation process.
-"""
+import random
 
 from src.interfaces.openai_gateway import OpenAIGateway
+from src.infrastructure.prompting.prompt_builder import PromptBuilder
 from src.infrastructure.logging.logger import logger, log_method
 from src.domain.exceptions import AutomatorError, OpenAIError, LinkedInGenerationError
 
@@ -15,74 +10,57 @@ class GenerateLinkedInPostUseCase:
     @log_method(logger)
     def __init__(self, openai_gateway: OpenAIGateway):
         """
-        Initialize the use case with an OpenAI gateway.
+        Initialize the use case with OpenAI gateway and PromptBuilder.
 
         Args:
             openai_gateway (OpenAIGateway): The gateway to interact with OpenAI
         """
-        self.openai_gateway = openai_gateway
-        logger.debug(f"GenerateLinkedInPostUseCase initialized with {openai_gateway.__class__.__name__}")
+        try:
+            self.openai_gateway = openai_gateway
+            self.prompt_builder = PromptBuilder()
+            logger.debug(f"GenerateLinkedInPostUseCase initialized with {openai_gateway.__class__.__name__}")
+        except Exception as e:
+            logger.error(f"Failed to initialize LinkedIn post generator: {str(e)}")
+            raise LinkedInGenerationError(f"Initialization failed: {str(e)}")
 
     @log_method(logger)
     def execute(self) -> str:
         """
         Execute the use case to generate LinkedIn post content.
 
-        Args:
-            prompt (str): The prompt for post generation
-
         Returns:
             str: The generated LinkedIn post content
 
         Raises:
-            TweetGenerationError: If post generation fails
+            LinkedInGenerationError: If post generation fails
         """
         try:
-            guidelines = """
-                        Here are the guidelines I’d like you to follow for this LinkedIn post:
-                        1. **Strong hook at the beginning**: Start with an impactful sentence to grab attention.
-                        2. **Clarity and conciseness**: Structure the post for easy reading, with clear and concise sentences.
-                        3. **Added value**: Provide useful information and practical tips for the reader.
-                        4. **Call to action**: End with a question or an invitation to comment, share, or provide feedback.
-                        5. **Relevant hashtags**: Add 3 to 5 hashtags related to the topic to increase reach.
-                        6. **Authenticity and professionalism**: Use a professional yet accessible tone, adding a personal touch or lived experience if relevant.
-                        7. **Character limit**: Respect LinkedIn's recommended limit of 600 characters to maximize readability and engagement.
+            topic_category = ['business', 'developer', 'slides']
+            random_topic = random.choice(topic_category)
+            # Reset any previous configuration
+            self.prompt_builder.reset()
 
-                        The post should be in French and formatted naturally, with no special formatting for links (e.g., https://www.webpage.net).
-                        """
-
-            logger.debug("Generating LinkedIn publication")
-
-            linkedin_prompt = (
-                "Generate a LinkedIn publication. The publication should be engaging, "
-                "conversational, and suitable for a professional audience. "
-                "Include relevant emojis where appropriate."
-                "output language in french."
-                "Include link without any special format, writing it as https://www.webpage.net."
-                f"{guidelines}"
-                f"""Example output : 🚀 Transformez votre entreprise avec Tech Aware! 🌐
-
-Découvrez comment notre collaboration avec les meilleures entreprises technologiques propulse le développement professionnel et les innovations. Chez Tech Aware, nous vous connectons avec des experts de l'industrie pour donner vie à vos projets avec efficacité et précision.
-
-🔗 Pourquoi choisir Tech Aware?
-- 🌟 Expertise reconnue: Nos partenaires sont rigoureusement sélectionnés pour leur savoir-faire technique et leur approche stratégique.
-- 🛠️ Solutions sur mesure: Adaptabilité et personnalisation pour répondre aux besoins spécifiques de votre entreprise.
-- 👥 Développement de compétences: Accès continu à la formation et au mentorat pour garantir des résultats exceptionnels.
-
-🔍 Découvrez plus sur l'impact de nos collaborations et comment nous pouvons dynamiser votre portefeuille de projets. 
-
-Visitez notre page ici:
-https://lnkd.in/eMeJkkMA 
-
-Rejoignez les leaders du secteur qui façonnent l'avenir avec Tech Aware! 💼📈"""
+            # Configure and build the prompt
+            prompt = (self.prompt_builder
+                      .set_platform_and_topic_category('linkedin', random_topic)
+                      .add_custom_instructions(
+                "Focus on professional insights and industry expertise. "
+                "Include specific achievements or metrics when possible. "
+                "Maintain a thought leadership tone suitable for LinkedIn's professional audience."
             )
-            generated_publication = self.openai_gateway.generate(linkedin_prompt)
-            logger.debug(f"LinkedIn publication generated: {generated_publication}")
-            return generated_publication
+                      .build())
+
+            logger.debug("Prompt built successfully, generating LinkedIn post")
+
+            # Generate the post using OpenAI
+            generated_post = self.openai_gateway.generate(prompt)
+            logger.debug(f"LinkedIn post generated successfully: {generated_post[:100]}...")
+
+            return generated_post
 
         except OpenAIError as e:
             logger.error(f"OpenAI error in GenerateLinkedInPostUseCase: {str(e)}")
-            raise LinkedInGenerationError(f"Error generating linkedIn publication: {str(e)}")
+            raise LinkedInGenerationError(f"Error generating LinkedIn post: {str(e)}")
         except Exception as e:
             logger.error(f"Unexpected error in GenerateLinkedInPostUseCase: {str(e)}")
-            raise LinkedInGenerationError(f"Unexpected error generating linkedIn publication: {str(e)}")
+            raise LinkedInGenerationError(f"Unexpected error generating LinkedIn post: {str(e)}")
