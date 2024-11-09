@@ -2,6 +2,11 @@
 
 ## [Unreleased]
 ### Changed
+#### Facebook Integration
+- Add separation, new test and adjustment:
+#### LinkedIn Integration
+- Add debug message for improve clarity
+#### Core Infrastructure
 - Add better output format
 - Add semantic versioning into changelo generation
 ### Documentation
