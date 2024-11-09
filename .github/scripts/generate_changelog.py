@@ -151,14 +151,23 @@ def organize_commits(commits):
     return organized, version_dates
 
 
+def version_key(version):
+    """Helper function to properly sort versions"""
+    if version == "Unreleased":
+        return float('inf'), float('inf'), float('inf')
+    try:
+        return tuple(map(int, version.split('.')))
+    except (AttributeError, ValueError):
+        return 0, 0, 0
+
 def generate_changelog(organized_commits, version_dates):
     """Génère le contenu du changelog"""
     output = ["# Changelog\n\n"]
 
-    # Sort versions in reverse order (newest first)
+    # Sort versions in reverse order (newest first), using the version_key function
     versions = sorted(organized_commits.keys(),
-                      key=lambda x: x if x == "Unreleased" else [int(v) for v in x.split('.')],
-                      reverse=True)
+                     key=version_key,
+                     reverse=True)
 
     for version in versions:
         categories = organized_commits[version]
