@@ -37,7 +37,6 @@ class GenerateLinkedInPostUseCase:
         try:
             topic_category = ['business', 'developer', 'slides']
             random_topic = random.choice(topic_category)
-            # Reset any previous configuration
             self.prompt_builder.reset()
 
             # Configure and build the prompt
@@ -50,17 +49,13 @@ class GenerateLinkedInPostUseCase:
             )
                       .build())
 
-            logger.debug("Prompt built successfully, generating LinkedIn post")
+            # Log the prompt for debugging
+            logger.debug(f"Generated prompt: {prompt}")
 
-            # Generate the post using OpenAI
-            generated_post = self.openai_gateway.generate(prompt)
-            logger.debug(f"LinkedIn post generated successfully: {generated_post[:100]}...")
-
-            return generated_post
-
+            # Generate the post using the OpenAI gateway
+            post_content = self.openai_gateway.generate(prompt)
+            return post_content
         except OpenAIError as e:
-            logger.error(f"OpenAI error in GenerateLinkedInPostUseCase: {str(e)}")
             raise LinkedInGenerationError(f"Error generating LinkedIn post: {str(e)}")
         except Exception as e:
-            logger.error(f"Unexpected error in GenerateLinkedInPostUseCase: {str(e)}")
             raise LinkedInGenerationError(f"Unexpected error generating LinkedIn post: {str(e)}")
