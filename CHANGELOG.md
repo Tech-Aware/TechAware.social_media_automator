@@ -11,6 +11,9 @@
 - Add semantic versioning into changelo generation
 ### Documentation
 - Update changelog [skip ci]
+### Other
+- Add assertion adjustment and mock response
+- Merge branch 'develop' of https://github.com/Tech-Aware/TechAware.social_media_automator into develop Retrieve changelog
 ## [0.3.0] - 2024-10-26
 ### Added
 #### Facebook Integration
