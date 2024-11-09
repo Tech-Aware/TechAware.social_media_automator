@@ -11,6 +11,8 @@
 - Add semantic versioning into changelo generation
 ### Documentation
 - Update changelog [skip ci]
+### Fixed
+- Add bug correction, adjustment in assertion... ALL TESTS ARE OK
 ### Other
 - Add assertion adjustment and mock response
 - Merge branch 'develop' of https://github.com/Tech-Aware/TechAware.social_media_automator into develop Retrieve changelog
