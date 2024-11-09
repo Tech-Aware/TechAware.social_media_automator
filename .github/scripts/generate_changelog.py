@@ -19,10 +19,21 @@ CATEGORIES = {
     'remove': 'Removed'
 }
 
+# Group related features under these major categories
+FEATURE_GROUPS = {
+    'prompting': 'Prompting System Integration',
+    'scraping': 'Scraping & Content Integration',
+    'use_cases': 'Use Cases Enhancement',
+    'blog': 'Blog Article Integration',
+    'facebook': 'Facebook Integration',
+    'linkedin': 'LinkedIn Integration',
+    'test': 'Testing Infrastructure',
+    'core': 'Core Functionality'
+}
+
 
 def get_git_commits():
     try:
-        # Get all commits with their full messages
         result = subprocess.run(
             ['git', 'log', '--pretty=format:%H%n%ad%n%s%n%b%n==END==', '--date=format:%Y-%m-%d'],
             capture_output=True,
@@ -36,6 +47,20 @@ def get_git_commits():
         return []
 
 
+def determine_feature_group(scope, message):
+    if not scope:
+        # Try to determine from message content
+        for key, _ in FEATURE_GROUPS.items():
+            if key in message.lower():
+                return key
+        return 'core'
+
+    for key in FEATURE_GROUPS.keys():
+        if key in scope.lower():
+            return key
+    return 'core'
+
+
 def parse_commit(commit_str):
     lines = commit_str.strip().split('\n')
     if len(lines) < 3:
@@ -45,12 +70,12 @@ def parse_commit(commit_str):
     date = lines[1]
     subject = lines[2]
 
-    # Parse conventional commit format
     match = re.match(r'^(\w+)(?:\(([^)]+)\))?: (.+)$', subject)
     if not match:
         return None
 
     type_, scope, message = match.groups()
+    feature_group = determine_feature_group(scope, message)
 
     return {
         'hash': hash_id,
@@ -58,13 +83,14 @@ def parse_commit(commit_str):
         'type': type_,
         'scope': scope,
         'message': message,
-        'body': '\n'.join(lines[3:]) if len(lines) > 3 else ''
+        'body': '\n'.join(lines[3:]) if len(lines) > 3 else '',
+        'feature_group': feature_group
     }
 
 
 def categorize_commits(commits):
-    versions = defaultdict(lambda: defaultdict(list))
-    current_version = "Unreleased"
+    versions = defaultdict(lambda: defaultdict(lambda: defaultdict(list)))
+    current_version = "1.0.0"  # Set initial version
     current_date = datetime.now().strftime('%Y-%m-%d')
 
     for commit_str in commits:
@@ -81,35 +107,69 @@ def categorize_commits(commits):
             continue
 
         category = CATEGORIES.get(commit['type'], 'Other')
+        feature_group = commit['feature_group']
+
         entry = {
             'message': commit['message'],
             'hash': commit['hash'][:8],
             'scope': commit['scope']
         }
 
-        versions[current_version][category].append(entry)
+        versions[current_version][category][feature_group].append(entry)
 
     return versions, current_date
 
 
+def format_message(entry):
+    """Format the commit message for better readability."""
+    message = entry['message']
+    # Capitalize first letter if it's not already
+    if message and message[0].islower():
+        message = message[0].upper() + message[1:]
+    # Remove trailing periods
+    message = message.rstrip('.')
+    return message
+
+
 def generate_changelog(versions, current_date):
     output = ["# Changelog\n"]
-    output.append("All notable changes to this project will be documented in this file.\n")
 
     for version, categories in versions.items():
-        version_header = "## [Unreleased]" if version == "Unreleased" else f"## [{version}] - {current_date}"
-        output.append(f"\n{version_header}\n")
+        version_header = f"## [{version}] - {current_date}\n"
+        output.append(version_header)
 
         for category in sorted(categories.keys()):
             if not categories[category]:
                 continue
 
-            output.append(f"\n### {category}\n")
-            for entry in categories[category]:
-                scope_text = f"({entry['scope']}) " if entry['scope'] else ""
-                output.append(f"- {scope_text}{entry['message']} ({entry['hash']})")
+            output.append(f"### {category}\n")
 
-    return '\n'.join(output)
+            # Group by feature
+            for feature_group, entries in categories[category].items():
+                if not entries:
+                    continue
+
+                if feature_group in FEATURE_GROUPS:
+                    output.append(f"#### {FEATURE_GROUPS[feature_group]}\n")
+
+                for entry in entries:
+                    message = format_message(entry)
+                    output.append(f"- {message}\n")
+
+            output.append("")  # Add blank line between categories
+
+        output.append("")  # Add blank line between versions
+
+    # Add footer
+    output.extend([
+        "### Notes\n",
+        "- All dates are in YYYY-MM-DD format\n",
+        "- Version numbers follow semantic versioning\n",
+        "- Commits organized by feature and functionality\n",
+        "- Each version builds upon previous functionality\n"
+    ])
+
+    return ''.join(output)
 
 
 def main():
