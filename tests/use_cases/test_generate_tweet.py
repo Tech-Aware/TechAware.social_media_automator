@@ -29,7 +29,7 @@ def test_generate_tweet_success(mock_openai_gateway):
     mock_openai_gateway.generate_tweet.return_value = "Generated tweet"
     use_case = GenerateTweetUseCase(mock_openai_gateway)
 
-    result = use_case.execute("Test prompt")
+    result = use_case.execute()
 
     assert result == "Generated tweet"
     mock_openai_gateway.generate_tweet.assert_called_once_with("Test prompt")
@@ -43,7 +43,7 @@ def test_generate_tweet_openai_error(mock_openai_gateway):
     use_case = GenerateTweetUseCase(mock_openai_gateway)
 
     with pytest.raises(TweetGenerationError) as exc_info:
-        use_case.execute("Test prompt")
+        use_case.execute()
 
     assert str(exc_info.value) == "Erreur lors de la génération du tweet : API error"
 
@@ -56,7 +56,7 @@ def test_generate_tweet_unexpected_error(mock_openai_gateway):
     use_case = GenerateTweetUseCase(mock_openai_gateway)
 
     with pytest.raises(TweetGenerationError) as exc_info:
-        use_case.execute("Test prompt")
+        use_case.execute()
 
     assert str(exc_info.value) == "Erreur inattendue lors de la génération du tweet : Unexpected error"
 

@@ -14,7 +14,7 @@ from unittest.mock import Mock
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 
 from src.use_cases.generate_facebook_publication import GenerateFacebookPublicationUseCase
-from src.domain.exceptions import OpenAIError, TweetGenerationError
+from src.domain.exceptions import OpenAIError, FacebookGenerationError
 
 
 @pytest.fixture
@@ -29,31 +29,28 @@ def test_generate_facebook_publication_success(mock_openai_gateway):
     """
     Test successful Facebook publication generation.
     """
-    mock_openai_gateway.generate_tweet.return_value = "Generated Facebook publication content"
+    mock_openai_gateway.generate.return_value = "Generated Facebook publication content"
     use_case = GenerateFacebookPublicationUseCase(mock_openai_gateway)
 
-    result = use_case.execute("Test prompt")
+    result = use_case.execute()
 
     assert result == "Generated Facebook publication content"
-    mock_openai_gateway.generate_tweet.assert_called_once()
+    mock_openai_gateway.generate.assert_called_once()
 
-    # Verify that the prompt was enhanced with Facebook-specific context
-    call_args = mock_openai_gateway.generate_tweet.call_args[0][0]
-    assert "Facebook publication" in call_args
-    assert "general audience" in call_args
-    assert "emojis" in call_args
-    assert "Test prompt" in call_args
+    # Verify that the prompt contains Facebook-specific context
+    call_args = mock_openai_gateway.generate.call_args[0][0]
+    assert "facebook" in call_args.lower()
 
 
 def test_generate_facebook_publication_openai_error(mock_openai_gateway):
     """
     Test handling of OpenAIError during Facebook publication generation.
     """
-    mock_openai_gateway.generate_tweet.side_effect = OpenAIError("API error")
+    mock_openai_gateway.generate.side_effect = OpenAIError("API error")
     use_case = GenerateFacebookPublicationUseCase(mock_openai_gateway)
 
-    with pytest.raises(TweetGenerationError) as exc_info:
-        use_case.execute("Test prompt")
+    with pytest.raises(FacebookGenerationError) as exc_info:
+        use_case.execute()
 
     assert "Error generating Facebook publication" in str(exc_info.value)
     assert "API error" in str(exc_info.value)
@@ -63,26 +60,32 @@ def test_generate_facebook_publication_unexpected_error(mock_openai_gateway):
     """
     Test handling of unexpected errors during Facebook publication generation.
     """
-    mock_openai_gateway.generate_tweet.side_effect = Exception("Unexpected error")
+    mock_openai_gateway.generate.side_effect = Exception("Unexpected error")
     use_case = GenerateFacebookPublicationUseCase(mock_openai_gateway)
 
-    with pytest.raises(TweetGenerationError) as exc_info:
-        use_case.execute("Test prompt")
+    with pytest.raises(FacebookGenerationError) as exc_info:
+        use_case.execute()
 
     assert "Unexpected error generating Facebook publication" in str(exc_info.value)
 
 
-def test_generate_facebook_publication_with_empty_prompt(mock_openai_gateway):
+def test_generate_facebook_publication_prompt_building(mock_openai_gateway):
     """
-    Test generation with an empty prompt.
+    Test that the prompt is correctly built using the PromptBuilder.
     """
-    mock_openai_gateway.generate_tweet.return_value = "Generated content for empty prompt"
+    mock_openai_gateway.generate.return_value = "Generated content"
     use_case = GenerateFacebookPublicationUseCase(mock_openai_gateway)
 
-    result = use_case.execute("")
+    result = use_case.execute()
 
-    assert result == "Generated content for empty prompt"
-    mock_openai_gateway.generate_tweet.assert_called_once()
+    assert result == "Generated content"
+    mock_openai_gateway.generate.assert_called_once()
+
+    # Verify that the prompt includes expected Facebook-specific elements
+    call_args = mock_openai_gateway.generate.call_args[0][0]
+    assert "facebook" in call_args.lower()
+    assert "engaging" in call_args.lower()
+    assert "storytelling" in call_args.lower()
 
 
 if __name__ == "__main__":

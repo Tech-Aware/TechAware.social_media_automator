@@ -1,20 +1,13 @@
-# Location: tests/presentation/test_cli.py
+# tests/presentation/test_cli.py
 
 """
-This module contains unit tests for the CLI class, including platform-specific
-prompt handling, content generation, posting capabilities, and comprehensive
-error handling scenarios. It verifies the correct behavior of the CLI under
-both normal and error conditions.
+This module contains unit tests for the CLI class. It tests the actual implementation
+of the CLI including menu selection, content generation and posting capabilities,
+and comprehensive error handling scenarios.
 """
 
 import pytest
-import sys
-import os
-from unittest.mock import patch, MagicMock
-
-# Add project root to Python path
-sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
-
+from unittest.mock import patch, MagicMock, call
 from src.presentation.cli import CLI
 from src.domain.exceptions import (
     ValidationError, TwitterError, FacebookError, LinkedInError,
@@ -62,62 +55,18 @@ def test_cli_initialization_error():
         assert "Failed to initialize CLI due to configuration error" in str(exc_info.value)
 
 
-@pytest.mark.parametrize("platform", ["twitter", "facebook", "linkedin"])
-def test_read_platform_prompt_success(platform):
+@pytest.mark.parametrize("user_input,expected_call", [
+    ("y", None),  # blog article option
+    ("n", "run"),  # social media option
+])
+def test_menu_selection(mock_gateways, user_input, expected_call):
     """
-    Test successful prompt reading for each platform.
+    Test menu selection handling based on user input.
 
     Args:
-        platform: The social media platform to test
-    """
-    expected_content = f"Test prompt for {platform}"
-    with patch('src.presentation.cli.TwitterAPI'), \
-            patch('src.presentation.cli.FacebookAPI'), \
-            patch('src.presentation.cli.LinkedInAPI'), \
-            patch('src.presentation.cli.OpenAIAPI'), \
-            patch('src.presentation.cli.read_prompt_file', return_value=expected_content) as mock_read:
-        cli = CLI()
-        result = cli.read_platform_prompt(platform)
-        assert result == expected_content
-        mock_read.assert_called_once_with(platform)
-
-
-@pytest.mark.parametrize("platform", ["twitter", "facebook", "linkedin"])
-def test_read_platform_prompt_file_not_found(platform):
-    """
-    Test prompt reading with missing files for each platform.
-
-    Args:
-        platform: The social media platform to test
-    """
-    with patch('src.presentation.cli.TwitterAPI'), \
-            patch('src.presentation.cli.FacebookAPI'), \
-            patch('src.presentation.cli.LinkedInAPI'), \
-            patch('src.presentation.cli.OpenAIAPI'), \
-            patch('src.presentation.cli.read_prompt_file', side_effect=FileNotFoundError()):
-        cli = CLI()
-        result = cli.read_platform_prompt(platform)
-        assert result == f"Generate an engaging {platform} post about technology."
-
-
-def test_read_platform_prompt_unexpected_error():
-    """
-    Test handling of unexpected errors during prompt reading.
-    """
-    with patch('src.presentation.cli.TwitterAPI'), \
-            patch('src.presentation.cli.FacebookAPI'), \
-            patch('src.presentation.cli.LinkedInAPI'), \
-            patch('src.presentation.cli.OpenAIAPI'), \
-            patch('src.presentation.cli.read_prompt_file', side_effect=Exception("Unexpected error")):
-        cli = CLI()
-        with pytest.raises(AutomatorError) as exc_info:
-            cli.read_platform_prompt("facebook")
-        assert "Unexpected error reading prompt file" in str(exc_info.value)
-
-
-def test_cli_run_success(mock_gateways):
-    """
-    Test successful content generation and posting to Facebook.
+        mock_gateways: Fixture providing mock gateway instances
+        user_input: The simulated user input
+        expected_call: The expected method to be called
     """
     mock_twitter, mock_facebook, mock_linkedin, mock_openai = mock_gateways
 
@@ -125,35 +74,75 @@ def test_cli_run_success(mock_gateways):
             patch('src.presentation.cli.FacebookAPI', return_value=mock_facebook), \
             patch('src.presentation.cli.LinkedInAPI', return_value=mock_linkedin), \
             patch('src.presentation.cli.OpenAIAPI', return_value=mock_openai), \
-            patch.object(CLI, 'read_platform_prompt', return_value="Test prompt"), \
+            patch('builtins.input', return_value=user_input), \
             patch('builtins.print') as mock_print, \
-            patch('time.sleep'):
-        # Create CLI instance
+            patch.object(CLI, 'run') as mock_run:
+
+        cli = CLI()
+        cli.menu()
+
+        if user_input.lower() == "y":
+            mock_print.assert_called_with("You want to create a blog article first !")  # Fixed space before !
+            mock_run.assert_not_called()
+        else:
+            mock_run.assert_called_once()
+
+
+def test_cli_run_success(mock_gateways):
+    """
+    Test successful execution of the run method with all content generation and posting.
+    """
+    mock_twitter, mock_facebook, mock_linkedin, mock_openai = mock_gateways
+
+    # Configure mock responses
+    mock_facebook_content = "Generated Facebook content"
+    mock_linkedin_content = "Generated LinkedIn content"
+    mock_tweet_content = "Generated tweet content"
+
+    with patch('src.presentation.cli.TwitterAPI', return_value=mock_twitter), \
+            patch('src.presentation.cli.FacebookAPI', return_value=mock_facebook), \
+            patch('src.presentation.cli.LinkedInAPI', return_value=mock_linkedin), \
+            patch('src.presentation.cli.OpenAIAPI', return_value=mock_openai), \
+            patch('builtins.print') as mock_print, \
+            patch('time.sleep'):  # Mock sleep to speed up tests
+
+        # Create CLI instance and configure mocks
         cli = CLI()
 
-        # Configure mock responses properly
-        mock_generate_facebook = MagicMock(return_value="Generated Facebook content")
-        mock_post_facebook = MagicMock(return_value={"id": "123456"})
+        # Mock generation use cases
+        cli.generate_facebook_use_case.execute = MagicMock(return_value=mock_facebook_content)
+        cli.generate_linkedin_use_case.execute = MagicMock(return_value=mock_linkedin_content)
+        cli.generate_tweet_use_case.execute = MagicMock(return_value=mock_tweet_content)
 
-        # Replace the real methods with mocks
-        cli.generate_facebook_use_case.execute = mock_generate_facebook
-        cli.post_facebook_use_case.execute = mock_post_facebook
+        # Mock posting use cases
+        cli.post_facebook_use_case.execute = MagicMock(return_value={"id": "123456"})
+        cli.post_linkedin_use_case.execute = MagicMock(return_value={"id": "789012"})
+        cli.post_tweet_use_case.execute = MagicMock(return_value={"id": "345678"})
 
         # Run the CLI
         cli.run()
 
-        # Verify content generation
-        mock_generate_facebook.assert_called_once_with("Test prompt")
-        mock_post_facebook.assert_called_once_with("Generated Facebook content")
+        # Verify content generation calls
+        cli.generate_facebook_use_case.execute.assert_called_once()
+        cli.generate_linkedin_use_case.execute.assert_called_once()
+        cli.generate_tweet_use_case.execute.assert_called_once()
 
-        # Verify output messages
-        mock_print.assert_any_call("Generated Facebook post: Generated Facebook content")
-        mock_print.assert_any_call("Facebook post created successfully. Post ID: 123456")
+        # Verify posting calls
+        cli.post_facebook_use_case.execute.assert_called_once_with(mock_facebook_content)
+        cli.post_linkedin_use_case.execute.assert_called_once_with(mock_linkedin_content)
+        cli.post_tweet_use_case.execute.assert_called_once_with(mock_tweet_content)
+
+        # Verify progress messages
+        assert any("Waiting for facebook generation" in str(call) for call in mock_print.call_args_list)
+        assert any("Waiting for linkedin generation" in str(call) for call in mock_print.call_args_list)
+        assert any("Waiting for X tweet generation" in str(call) for call in mock_print.call_args_list)
 
 
 @pytest.mark.parametrize("exception,expected_message", [
     (ValidationError("Invalid content"), "Invalid content"),
     (FacebookError("Facebook API error"), "Facebook error"),
+    (LinkedInError("LinkedIn API error"), "LinkedIn error"),
+    (TwitterError("Twitter API error"), "Twitter error"),
     (OpenAIError("OpenAI API error"), "OpenAI error"),
     (TweetGenerationError("Generation failed"), "Content generation error"),
     (Exception("Unexpected error"), "An unexpected error occurred")
@@ -173,9 +162,10 @@ def test_cli_run_errors(mock_gateways, exception, expected_message):
             patch('src.presentation.cli.FacebookAPI', return_value=mock_facebook), \
             patch('src.presentation.cli.LinkedInAPI', return_value=mock_linkedin), \
             patch('src.presentation.cli.OpenAIAPI', return_value=mock_openai), \
-            patch.object(CLI, 'read_platform_prompt', side_effect=exception), \
-            patch('builtins.print') as mock_print:
+            patch('builtins.print') as mock_print, \
+            patch('time.sleep'):
         cli = CLI()
+        cli.generate_facebook_use_case.execute = MagicMock(side_effect=exception)
 
         with pytest.raises(AutomatorError) as exc_info:
             cli.run()
@@ -195,15 +185,16 @@ def test_cli_reraising_automator_error(mock_gateways):
             patch('src.presentation.cli.FacebookAPI', return_value=mock_facebook), \
             patch('src.presentation.cli.LinkedInAPI', return_value=mock_linkedin), \
             patch('src.presentation.cli.OpenAIAPI', return_value=mock_openai), \
-            patch.object(CLI, 'read_platform_prompt', side_effect=original_error), \
-            patch('builtins.print') as mock_print:
+            patch('builtins.print') as mock_print, \
+            patch('time.sleep'):
         cli = CLI()
+        cli.generate_facebook_use_case.execute = MagicMock(side_effect=original_error)
 
         with pytest.raises(AutomatorError) as exc_info:
             cli.run()
 
         assert exc_info.value is original_error
-        mock_print.assert_called_with("An error occurred: Original error")
+        mock_print.assert_any_call("An error occurred: Original error")
 
 
 if __name__ == "__main__":

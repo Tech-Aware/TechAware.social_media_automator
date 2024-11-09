@@ -1,4 +1,4 @@
-# tests/domain/test_exceptions.py
+# Location: tests/domain/test_exceptions.py
 
 """
 This module contains unit tests for the custom exceptions
@@ -23,7 +23,13 @@ from src.domain.exceptions import (
     TweetGenerationError,
     ConfigurationError,
     ValidationError,
-    LinkedInError
+    LinkedInError,
+    FacebookError,
+    OdooError,
+    OdooConnectionError,
+    OdooAuthenticationError,
+    OdooValidationError,
+    OdooPublicationError
 )
 
 
@@ -62,6 +68,36 @@ def test_linkedin_error():
         raise LinkedInError("Test LinkedInError")
 
 
+def test_facebook_error():
+    with pytest.raises(FacebookError):
+        raise FacebookError("Test FacebookError")
+
+
+def test_odoo_error():
+    with pytest.raises(OdooError):
+        raise OdooError("Test OdooError")
+
+
+def test_odoo_connection_error():
+    with pytest.raises(OdooConnectionError):
+        raise OdooConnectionError("Test OdooConnectionError")
+
+
+def test_odoo_authentication_error():
+    with pytest.raises(OdooAuthenticationError):
+        raise OdooAuthenticationError("Test OdooAuthenticationError")
+
+
+def test_odoo_validation_error():
+    with pytest.raises(OdooValidationError):
+        raise OdooValidationError("Test OdooValidationError")
+
+
+def test_odoo_publication_error():
+    with pytest.raises(OdooPublicationError):
+        raise OdooPublicationError("Test OdooPublicationError")
+
+
 def test_error_inheritance():
     assert issubclass(TwitterError, AutomatorError)
     assert issubclass(OpenAIError, AutomatorError)
@@ -69,6 +105,13 @@ def test_error_inheritance():
     assert issubclass(ConfigurationError, AutomatorError)
     assert issubclass(ValidationError, AutomatorError)
     assert issubclass(LinkedInError, AutomatorError)
+    assert issubclass(FacebookError, AutomatorError)
+    # Test Odoo exceptions hierarchy
+    assert issubclass(OdooError, AutomatorError)
+    assert issubclass(OdooConnectionError, OdooError)
+    assert issubclass(OdooAuthenticationError, OdooError)
+    assert issubclass(OdooValidationError, OdooError)
+    assert issubclass(OdooPublicationError, OdooError)
 
 
 if __name__ == '__main__':
