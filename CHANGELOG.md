@@ -1,110 +1,130 @@
 # Changelog
-## [1.0.0] - 2024-11-09
+
+## [Unreleased]
+### Changed
+- Add better output format
+- Add semantic versioning into changelo generation
+### Documentation
+- Update changelog [skip ci]
+## [0.3.0] - 2024-10-26
 ### Added
-#### Core Functionality
-- Add new exceptions for linkedin and facebook generation
-- Change prompt method for improve performance
-- Change prompt method for improve performance
-- Add more prompt details (WIP_prompting_scrapping)
-- Enhance IA guidelines in prompt
-- Add new exceptions for odoo next release
-- Add linkedin generation and post
-- Changed programm entry for menu selection
-- Add menu selection for new feature/blog_article_integration
-- Add time for console visibility - add a timer, while loop for emulate a waiting process into terminal
-- Add prompt functionnality - add guidelines content - add relevant_link[topic] dict with random selection - fix ** format into generation
-- Integrate Facebook posting capabilities
-- Add Facebook content generation
-- Add Facebook post functionality
-- Implement Facebook API integration
-- Add FacebookGateway abstract class
+#### Facebook Integration
 - Add Facebook environment configuration
-- Implement FacebookPublication with validation
+- Add Facebook post functionality
 - Add FacebookError class
-- Add LinkedIn API integration to CLI commands
-- Add explicit tweet validation before posting
+- Add FacebookGateway abstract class
+- Add new exceptions for linkedin and facebook generation
+- Add verifications, logs and exceptions: - add more debug message to better follow process - add a verification of page acces to post in facebook - add personnalized exceptions
+- Adding instruction to prompt message
+- Implement FacebookPublication with validation
 #### Prompting System Integration
 - Add module fodler
-#### Use Cases Enhancement
+- Add more prompt details (WIP_prompting_scrapping)
+#### Core Infrastructure
+- Add new exceptions for odoo next release
 - Change prompt call for improve performance
-#### Testing Infrastructure
-- Change url to join base url
+- Change prompt method for improve performance
+- Changed programm entry for menu selection
+- Enhance IA guidelines in prompt
+#### Content Generation
+- Add Facebook content generation
 - Add scraper content for techaware.net/webpage
-- Add script for running all unit tests
-#### Facebook Integration
-- Adding instruction to prompt message
-- Adding instruction to prompt message
-- Add verifications, logs and exceptions: - add more debug message to better follow process - add a verification of page acces to post in facebook - add personnalized exceptions
+- Change url to join base url
+#### CLI Improvements
+- Add linkedin generation and post
+- Add menu selection for new feature/blog_article_integration
+- Add time for console visibility - add a timer, while loop for emulate a waiting process into terminal
+- Integrate Facebook posting capabilities
 #### LinkedIn Integration
 - Add post generation for linkedin plateform
-### Build
-#### Core Functionality
-- Add initial project dependencies
-### CI
-#### Core Functionality
-- Add automated changelog generation workflow
+#### API Integration
+- Add prompt functionnality - add guidelines content - add relevant_link[topic] dict with random selection - fix ** format into generation
+- Implement Facebook API integration
 ### Changed
-#### Core Functionality
-- Add better output format
 - Canceled file_reader and add imroved prompting continuity
 - Changed process to generate and publish - add media social post generation separatly to better integration
-- Add LinkedInError for LinkedIn API error handling
-- Streamline tweet generation and posting process
-#### Testing Infrastructure
-- Improve test coverage for PostTweetUseCase
-- Enhance test coverage and error handling for CLI class
-- Enhance test coverage and improve mock usage
-- Enhance test coverage and improve mock responses
 ### Documentation
-#### Core Functionality
-- Cancel scraping added content: DEPRECATED
-- Update changelog [skip ci]
-- Cancel #TEST line
-- Update changelog [skip ci]
-- Cancel #TEST line
-- Update changelog [skip ci]
+#### Content Generation
 - Add historical changelog content
+- Cancel scraping added content: DEPRECATED
+#### Core Infrastructure
+- Cancel #TEST line
+- Upadted
+- Update arborescence
 - Update changelog [skip ci]
 - Updated according to last implementation
-- Update arborescence
-- Upadted
 ### Fixed
-#### Core Functionality
+#### API Integration
 - Changed error raised from tweeter to OpenAIError
+#### Core Infrastructure
 - Cancel debug message who returned result in everything
-- Rename 'entitites' folder to 'entities' for consistency
-- Improve error handling and generated tweet formatting
-- Repository url adress - changed te default url adress to the correct url.git
 #### Facebook Integration
 - Add log message for debug
-### Maintenance
-#### Testing Infrastructure
+### Other
+#### Core Infrastructure
+- Add automated changelog generation workflow
+- Add initial project dependencies
+- Deleted files
+- Merge branch 'develop' of https://github.com/Tech-Aware/TechAware.social_media_automator into develop
+#### Prompting System Integration
+- Merge branch 'develop' into feature/scraping_prompting_integration
+- Merge branch 'feature/prompting_integration' into develop
+#### Facebook Integration
+- Merge branch 'develop' into feature/facebook_integration - add new dependies into the requirements files
+- Merge branch 'develop' into feature/facebook_integration - fusion of develop into feature/facebook_integration
+- Résolution des conflits et fusion de develop dans feature/facebook_integration
+### Testing
+- Add test for prompt_builder.py
+- Add test for prompt_builder_gateway.py
+- Test ci worflow changelog generation
+## [0.1.0] - 2024-10-10
+### Added
+#### CLI Improvements
+- Add LinkedIn API integration to CLI commands
+#### Core Infrastructure
+- Add explicit tweet validation before posting
+- Add script for running all unit tests
+### Changed
+#### LinkedIn Integration
+- Add LinkedInError for LinkedIn API error handling
+#### Core Infrastructure
+- Enhance test coverage and improve mock usage
+- Improve test coverage for PostTweetUseCase
+#### CLI Improvements
+- Enhance test coverage and error handling for CLI class
+- Streamline tweet generation and posting process
+#### API Integration
+- Enhance test coverage and improve mock responses
+### Fixed
+#### Core Infrastructure
+- Rename 'entitites' folder to 'entities' for consistency
+- Repository url adress - changed te default url adress to the correct url.git
+#### API Integration
+- Improve error handling and generated tweet formatting
+### Other
+#### Core Infrastructure
 - Add __init__.py for utils tests
 - Enhance test coverage for read_prompt_file function
-#### Core Functionality
-- Update environment to include LinkedIn credentials
 - Initial project setup
-### Other
-#### Core Functionality
-- Create PostLinkedInUseCase
-- Create LinkedInGateway abstract base class
+#### LinkedIn Integration
 - Add LinkedIn user info retrieval function
-- Create LinkedInAPI class
-- Set up LinkedIn environment configuration
+- Create LinkedInGateway abstract base class
 - Create LinkedInPublication class
+- Create PostLinkedInUseCase
+- Set up LinkedIn environment configuration
+- Update environment to include LinkedIn credentials
+#### API Integration
+- Create LinkedInAPI class
 ### Testing
-#### Core Functionality
-- Test ci worflow changelog generation
-- Create initial tests for PostLinkedInUseCase
-- Add initial tests for LinkedInGateway
-- Create initial tests for LinkedInAPI
+#### LinkedIn Integration
 - Add initial tests for LinkedIn config
-- Set up initial tests for LinkedInPublication
+- Add initial tests for LinkedInGateway
 - Add tests for LinkedIn credentials in environment config
 - Add unit tests for LinkedInError
-#### Testing Infrastructure
-- Add test for prompt_builder_gateway.py
-- Add test for prompt_builder.py
+- Create initial tests for PostLinkedInUseCase
+- Set up initial tests for LinkedInPublication
+#### API Integration
+- Create initial tests for LinkedInAPI
 ### Notes
 - All dates are in YYYY-MM-DD format
 - Version numbers follow semantic versioning
