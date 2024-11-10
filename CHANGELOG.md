@@ -4,9 +4,17 @@
 ### Changed
 - Change url for developer without 'é'
 ### Documentation
+#### API Integration
+- Add documentation for API, implementation and contributong according to readme.md
+#### Core Infrastructure
 - Cancel file and requirements
 - Update changelog [skip ci]
+### Fixed
+- Fixing test failures
 ### Other
+#### Core Infrastructure
+- Merge branch 'develop' of https://github.com/Tech-Aware/TechAware.social_media_automator into develop
+#### API Integration
 - Refactor-openai_api): changed logic according to prompt builder implentation
 ### Testing
 - Fix retry behavior test for long tweets
