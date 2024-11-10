@@ -187,8 +187,7 @@ ODOO_PASSWORD=your_password
 ### Command Line Interface
 ```bash
 # Run the program
-python -m src.presentation.cli
-
+python -c "from src.presentation.cli import CLI; CLI().menu()"
 # When prompted:
 # - Enter 'y' to choose blog article creation (coming soon)
 # - Enter 'n' to automatically generate and post content to all social media platforms
@@ -200,9 +199,6 @@ python -m src.presentation.cli
 ```bash
 # Run all tests
 python -m pytest
-
-# Run tests with coverage
-python -m pytest --cov=src
 
 # Run specific test file
 python -m pytest tests/path/to/test_file.py
