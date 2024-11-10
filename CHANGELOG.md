@@ -5,6 +5,7 @@
 - Change url for developer without 'é'
 ### Documentation
 #### API Integration
+- Add api aknolewdment url
 - Add documentation for API, implementation and contributong according to readme.md
 #### Core Infrastructure
 - Cancel file and requirements
