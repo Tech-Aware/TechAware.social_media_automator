@@ -6,7 +6,7 @@ TechAware Social Media Automator is a sophisticated content generation and publi
 ## Features
 - Multi-platform content generation and publishing
 - Platform-specific content optimization
-- Automated cgit push origin developontent scheduling
+- Automated content scheduling
 - Brand voice consistency
 - SEO optimization for blog content
 - Content scraping and analysis
@@ -18,8 +18,6 @@ TechAware Social Media Automator is a sophisticated content generation and publi
 automator/
 ├── docs/
 ├── resources/
-│   ├── knowledge/
-│   └── prompts/
 ├── src/
 │   ├── domain/
 │   │   ├── entities/
@@ -54,7 +52,6 @@ automator/
 │   │   │   └── prompt_builder.py                   # Implemented
 │   │   └── utils/
 │   │       ├── __init__.py
-│   │       └── file_reader.py
 │   ├── interfaces/
 │   │   ├── __init__.py
 │   │   ├── twitter_gateway.py
@@ -131,7 +128,7 @@ automator/
 
 1. Clone the repository
 ```bash
-git clone [repository-url]
+git clone [https://github.com/Tech-Aware/TechAware.social_media_automator.git]
 cd automator
 ```
 
@@ -189,17 +186,12 @@ ODOO_PASSWORD=your_password
 
 ### Command Line Interface
 ```bash
-# Generate and post a tweet
-python -m src.presentation.cli twitter
+# Run the program
+python -m src.presentation.cli
 
-# Generate and post a Facebook publication
-python -m src.presentation.cli facebook
-
-# Generate and post a LinkedIn post
-python -m src.presentation.cli linkedin
-
-# Generate and post a blog article (Coming soon)
-python -m src.presentation.cli blog
+# When prompted:
+# - Enter 'y' to choose blog article creation (coming soon)
+# - Enter 'n' to automatically generate and post content to all social media platforms
 ```
 
 ## Development
