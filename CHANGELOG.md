@@ -1,6 +1,10 @@
 # Changelog
 
 ## [Unreleased]
+### Documentation
+- Update changelog [skip ci]
+### Other
+- Refactor-openai_api): changed logic according to prompt builder implentation
 ### Testing
 - Fix retry behavior test for long tweets
 ## [1.0.0] - 2024-11-09
