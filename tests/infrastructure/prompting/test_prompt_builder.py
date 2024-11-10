@@ -63,18 +63,30 @@ class TestPromptBuilder:
 
     def test_create_linkedin_developer_prompt(self, builder: PromptBuilder):
         """Test creating a LinkedIn prompt for developer category."""
-        prompt = builder.set_platform_and_topic_category('linkedin', 'developer').build()
+        # Mock the select_random_topic to return a controlled response
+        mock_topic = {
+            'subject': 'Test Developer Topic',
+            'context': 'Test context',
+            'problem': 'Test problem',
+            'solution': 'Test solution',
+            'link': 'https://www.techaware.net/pour-les-developpeurs'
+        }
 
-        print("\nTest: LinkedIn Developer Prompt Generation")
-        print("Generated Prompt:")
-        print("-" * 80)
-        print(prompt)
-        print("-" * 80)
-        print(f"Selected topic: {builder.selected_topic['subject']}")
+        with patch.object(PromptBuilder, 'select_random_topic', return_value=mock_topic):
+            prompt = builder.set_platform_and_topic_category('linkedin', 'developer').build()
 
-        assert 'Generate a linkedin post' in prompt
-        assert 'Longueur maximale: 3000' in prompt
-        assert 'pour-les-développeurs' in prompt
+            print("\nTest: LinkedIn Developer Prompt Generation")
+            print("Generated Prompt:")
+            print("-" * 80)
+            print(prompt)
+            print("-" * 80)
+            print(f"Selected topic: {builder.selected_topic['subject']}")
+            print(f"Selected link: {builder.selected_topic['link']}")
+
+            assert 'Generate a linkedin post' in prompt
+            assert 'Longueur maximale: 3000' in prompt
+            assert 'pour-les-developpeurs' in prompt
+            assert mock_topic['link'] in prompt
 
     def test_create_facebook_slides_prompt(self, builder: PromptBuilder):
         """Test creating a Facebook prompt for slides category."""
