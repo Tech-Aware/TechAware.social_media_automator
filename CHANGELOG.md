@@ -2,6 +2,7 @@
 
 ## [Unreleased]
 ### Documentation
+- Cancel file and requirements
 - Update changelog [skip ci]
 ### Other
 - Refactor-openai_api): changed logic according to prompt builder implentation
