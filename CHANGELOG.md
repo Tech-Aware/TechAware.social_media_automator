@@ -1,6 +1,9 @@
 # Changelog
 
 ## [Unreleased]
+### Testing
+- Fix retry behavior test for long tweets
+## [1.0.0] - 2024-11-09
 ### Changed
 #### Facebook Integration
 - Add separation, new test and adjustment:
