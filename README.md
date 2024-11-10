@@ -262,11 +262,11 @@ isort src tests
 This project is licensed under the MIT License - see the LICENSE file for details.
 
 ## Contact
-Project Link: [https://github.com/yourusername/automator](https://github.com/yourusername/automator)
+Project Link: https://github.com/Tech-Aware/TechAware.social_media_automator.git
 
 ## Acknowledgments
-- OpenAI GPT Models
-- Twitter API
-- Facebook Graph API
-- LinkedIn API
-- Odoo API
+- OpenAI GPT Models: https://platform.openai.com/docs/api-reference/introduction
+- X (formerly Twitter) API: https://developer.x.com/en/docs/x-api/getting-started/about-x-api
+- Facebook Graph API: https://developers.facebook.com/docs/graph-api/ 
+- LinkedIn API: https://learn.microsoft.com/en-us/linkedin/
+- Odoo API: https://www.odoo.com/documentation/18.0/developer.html
