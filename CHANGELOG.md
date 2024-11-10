@@ -1,6 +1,8 @@
 # Changelog
 
 ## [Unreleased]
+### Changed
+- Change url for developer without 'é'
 ### Documentation
 - Cancel file and requirements
 - Update changelog [skip ci]
