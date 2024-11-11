@@ -1,7 +1,12 @@
 # Changelog
 
 ## [Unreleased]
+### Documentation
+- Update changelog [skip ci]
 ### Fixed
+#### API Integration
+- Update in api credential, environment, cli and terminal launch
+#### Facebook Integration
 - Changed how tokens are caught
 ## [1.0.0] - 2024-11-09
 ### Changed
