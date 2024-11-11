@@ -136,74 +136,91 @@ class PromptBuilder(PromptBuilderGateway):
         'twitter': {
             'max_length': 280,
             'structure': """
-    Format pour X (anciennement Twitter):
-    1. Accroche percutante avec emoji
-    2. Présentation du problème en une phrase
-    3. Solution Tech Aware brève et percutante
-    4. Call-to-action avec lien
-    5. 2-3 hashtags pertinents"""
+    Structure pour X (anciennement Twitter):
+    • Accroche forte avec emoji pertinent
+    • Message direct et impactant
+    • Solution Tech Aware avec bénéfice clé
+    • Call-to-action + lien
+    • 2-3 hashtags pertinents"""
         },
         'linkedin': {
             'max_length': 3000,
             'structure': """
-Format pour LinkedIn:
-1. Accroche forte dans les premières lignes
-2. Contexte du problème
-3. Solution Tech Aware détaillée avec points clés
-4. Exemple ou témoignage si pertinent
-5. Call-to-action professionnel
-6. 3-5 hashtags sectoriels
-
-Exemple de structure:
-🚀 [Accroche forte]
-
-[Contexte et problématique]
-
-Comment Tech Aware répond à ce besoin:
-✨ [Point clé 1]
-✨ [Point clé 2]
-✨ [Point clé 3]
-
-[Exemple/Témoignage]
-
-👉 [Call-to-action]
-[URL]
-
-#TechAware #hashtags"""
+    Structure pour LinkedIn:
+    • Accroche professionnelle avec hook
+    • Développement du contexte
+    • Points clés de la solution Tech Aware
+    • Exemple
+    • Call-to-action professionnel + lien
+    • 3-5 hashtags sectoriels"""
         },
         'facebook': {
             'max_length': 63206,
             'structure': """
-Format pour Facebook:
-1. Titre accrocheur avec emoji
-2. Introduction engageante
-3. Présentation du problème
-4. Solution Tech Aware détaillée
-5. Points clés avec emojis
-6. Témoignage si pertinent
-7. Call-to-action
-8. 2-4 hashtags
-
-Exemple de structure:
-✨ [Titre accrocheur]
-
-[Introduction et contexte]
-
-[Problématique]
-
-Comment Tech Aware vous accompagne:
-👉 [Point détaillé 1]
-👉 [Point détaillé 2]
-👉 [Point détaillé 3]
-
-[Témoignage si applicable]
-
-💡 [Call-to-action]
-[URL]
-
-#TechAware #hashtags"""
+    Structure pour Facebook:
+    • Titre captivant avec emoji
+    • Introduction engageante
+    • Développement de la problématique
+    • Solution Tech Aware détaillée
+    • Mini cas pratique ou témoignage
+    • Call-to-action + lien
+    • 2-3 hashtags pertinents"""
         }
     }
+
+    BRAND_STYLES = [
+        {
+            "name": "Direct et accessible",
+            "description": "S'adresse à l'audience comme à des amis ou des collègues, créant une proximité naturelle. Utilise un langage simple et des exemples concrets."
+        },
+        {
+            "name": "Pédagogique",
+            "description": "Simplifie des concepts complexes, construit une progression logique avec des anecdotes et des références culturelles."
+        }
+    ]
+
+    BRAND_TONES = [
+        {
+            "name": "Engagé et critique",
+            "description": "Éveille une prise de conscience en questionnant les implications des tendances technologiques."
+        },
+        {
+            "name": "Énergique et captivant",
+            "description": "Emploie des termes marquants et un vocabulaire imagé pour captiver l'attention sur des sujets complexes."
+        }
+    ]
+
+    BRAND_PERSONALITIES = [
+        {
+            "name": "Curieux et vigilant",
+            "description": "Montre une grande curiosité et une prudence face aux nouvelles technologies."
+        },
+        {
+            "name": "Transparent et engagé",
+            "description": "Valorise la transparence et se soucie du bien-être de son audience."
+        },
+        {
+            "name": "Visionnaire et prudent",
+            "description": "Présente une vision du futur tout en avertissant des risques potentiels."
+        }
+    ]
+
+    @log_method(logger)
+    def _select_random_voice(self):
+        """Sélectionne aléatoirement un style, un ton et une personnalité."""
+        import random
+        style = random.choice(self.BRAND_STYLES)
+        tone = random.choice(self.BRAND_TONES)
+        personality = random.choice(self.BRAND_PERSONALITIES)
+
+        logger.debug(
+            f"Selected voice elements - Style: {style['name']}, Tone: {tone['name']}, Personality: {personality['name']}")
+
+        return {
+            'style': style,
+            'tone': tone,
+            'personality': personality
+        }
 
     @log_method(logger)
     def __init__(self) -> None:
@@ -338,16 +355,6 @@ Comment Tech Aware vous accompagne:
 
     @log_method(logger)
     def build(self) -> str:
-        """
-        Build the final prompt with selected topic and platform guidelines.
-
-        Returns:
-            str: The complete prompt
-
-        Raises:
-            ValidationError: If prompt cannot be built
-            ConfigurationError: If configuration is incomplete
-        """
         try:
             if not all([self._platform, self._topic_category, self._selected_topic]):
                 logger.error("Platform and topic must be set before building prompt")
@@ -355,28 +362,62 @@ Comment Tech Aware vous accompagne:
 
             platform_info = self.PLATFORM_GUIDELINES[self._platform]
             topic = self._selected_topic
+            voice = self._select_random_voice()
 
-            logger.debug("Building prompt")
+            brand_voice = f"""
+    Voix de marque sélectionnée pour cette publication:
+
+    Style: {voice['style']['name']}
+    {voice['style']['description']}
+
+    Ton: {voice['tone']['name']}
+    {voice['tone']['description']}
+
+    Personnalité: {voice['personality']['name']}
+    {voice['personality']['description']}"""
+
             prompt_parts = [
-                f"Generate a {self._platform} post about the following Tech Aware topic:",
-                f"\nSujet: {topic['subject']}",
+                f"Générez une publication {self._platform} originale et engageante sur le sujet suivant de Tech Aware:",
+                f"\nInformations sur le sujet:",
+                f"Sujet: {topic['subject']}",
                 f"Contexte: {topic['context']}",
                 f"Problème: {topic['problem']}",
                 f"Solution: {topic['solution']}",
                 f"URL à inclure: {topic['link']}",
-                f"\nStructure requise pour {self._platform}:",
+                "\nVoix de marque à adopter pour cette publication:",
+                brand_voice,
+                f"\nStructure pour {self._platform}:",
                 platform_info['structure'],
-                f"\nLongueur maximale: {platform_info['max_length']} caractères",
-                "\nLe post doit être rédigé en français.",
-                "Incluez des emojis pertinents pour améliorer la lisibilité.",
-                "Fournissez la publication finale entre les balises <social_media_post>."
+                f"\nConsignes importantes:",
+                "1. Créez un contenu UNIQUE et ORIGINAL",
+                f"2. Adaptez la voix sélectionnée au format {self._platform}",
+                "3. Utilisez des emojis pertinents avec modération",
+                f"4. Respectez la limite de {platform_info['max_length']} caractères",
+                "5. Rédigez en français avec un style naturel et engageant",
+                "\nInstructions CRUCIALES pour l'URL:",
+                "- Incluez l'URL en texte brut, exactement comme fournie",
+                "- N'utilisez PAS de syntaxe Markdown ou de crochets",
+                "- CORRECT: 'Découvrez plus sur https://www.techaware.net/pour-les-entreprises'",
+                "- INCORRECT: '[Découvrez plus](https://www.techaware.net/pour-les-entreprises)'",
+                "- INCORRECT: '[Tech Aware pour les Entreprises](lien)'",
+                "\nFormat OBLIGATOIRE de la réponse:",
+                "1. Votre réponse DOIT commencer par <social_media_post>",
+                "2. Votre réponse DOIT se terminer par </social_media_post>",
+                "3. La publication COMPLÈTE doit être à l'intérieur de ces balises",
+                "4. Ne mettez RIEN avant ou après ces balises",
+                "\nExemple de format (à ne pas copier):",
+                "<social_media_post>",
+                "Votre contenu ici...",
+                "URL en texte brut...",
+                "</social_media_post>",
             ]
 
             if self._custom_instructions:
                 prompt_parts.append(f"\nInstructions supplémentaires:\n{self._custom_instructions}")
 
             final_prompt = "\n".join(prompt_parts)
-            logger.success("Prompt built successfully")
+            logger.success(
+                f"Prompt built successfully with voice: {voice['style']['name']}, {voice['tone']['name']}, {voice['personality']['name']}")
             return final_prompt
 
         except ValidationError as e:
