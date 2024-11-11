@@ -191,6 +191,9 @@ python .\main.py
 # When prompted:
 # - Enter 'y' to choose blog article creation (coming soon)
 # - Enter 'n' to automatically generate and post content to all social media platforms
+
+# Run the program for a specified platform between linkedin, facebook and twitter(x)
+python .\post_in.py platform
 ```
 
 ## Development
