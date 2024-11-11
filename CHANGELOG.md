@@ -1,6 +1,8 @@
 # Changelog
 
 ## [Unreleased]
+### Added
+- Add feature for publish in specified linkedin, facebook or x platform
 ### Documentation
 - Update changelog [skip ci]
 - Update run methode for developers
