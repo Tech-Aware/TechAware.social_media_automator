@@ -1,7 +1,6 @@
 import openai
 import re
 import random
-import PyPDF2
 import os
 from openai import OpenAI
 from src.interfaces.openai_gateway import OpenAIGateway
