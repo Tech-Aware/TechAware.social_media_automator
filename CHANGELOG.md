@@ -4,6 +4,7 @@
 ### Added
 #### Core Infrastructure
 - Add more details:\n
+- Add parser to specify command for each platform
 #### Facebook Integration
 - Add feature for publish in specified linkedin, facebook or x platform
 ### Changed
