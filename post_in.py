@@ -1,22 +1,13 @@
 # post_in.py
 
-import sys
 import os
+import sys
 from dotenv import load_dotenv, find_dotenv
 from pathlib import Path
 import argparse
 from src.infrastructure.logging.logger import get_logger
 from src.domain.exceptions import ConfigurationError, AutomatorError
-from src.use_cases.generate_facebook_publication import GenerateFacebookPublicationUseCase
-from src.use_cases.generate_linkedin_post import GenerateLinkedInPostUseCase
-from src.use_cases.generate_tweet import GenerateTweetUseCase
-from src.use_cases.post_facebook import PostFacebookUseCase
-from src.use_cases.post_linkedin import PostLinkedInUseCase
-from src.use_cases.post_tweet import PostTweetUseCase
-from src.infrastructure.external.facebook_api import FacebookAPI
-from src.infrastructure.external.linkedin_api import LinkedInAPI
-from src.infrastructure.external.twitter_api import TwitterAPI
-from src.infrastructure.external.openai_api import OpenAIAPI
+from src.presentation.post_command import PostCommand
 
 logger = get_logger(__name__)
 
@@ -52,80 +43,55 @@ def setup_environment():
         return False
 
 
-def post_to_platform(platform: str):
-    """
-    Génère et poste du contenu sur une plateforme spécifique.
+def setup_parser():
+    """Configure l'analyseur d'arguments en ligne de commande"""
+    parser = argparse.ArgumentParser(description='Post content to social media platforms')
 
-    Args:
-        platform (str): La plateforme cible ('facebook', 'linkedin', ou 'twitter')
-    """
-    try:
-        # Initialiser OpenAI pour la génération
-        openai_gateway = OpenAIAPI()
+    parser.add_argument('platform',
+                        choices=['facebook', 'linkedin', 'twitter'],
+                        help='The platform to post to')
 
-        if platform == 'facebook':
-            # Facebook
-            facebook_gateway = FacebookAPI()
-            generate_use_case = GenerateFacebookPublicationUseCase(openai_gateway)
-            post_use_case = PostFacebookUseCase(facebook_gateway)
+    parser.add_argument('--debug',
+                        action='store_true',
+                        help='Enable debug logging')
 
-            # Génération et post
-            logger.info("Generating Facebook content")
-            content = generate_use_case.execute()
-            logger.info("Posting to Facebook")
-            result = post_use_case.execute(content)
-            print("Successfully posted to Facebook!")
+    parser.add_argument('--dry-run',
+                        action='store_true',
+                        help='Generate content without posting')
 
-        elif platform == 'linkedin':
-            # LinkedIn
-            linkedin_gateway = LinkedInAPI()
-            generate_use_case = GenerateLinkedInPostUseCase(openai_gateway)
-            post_use_case = PostLinkedInUseCase(linkedin_gateway)
+    parser.add_argument('--topic',
+                        choices=['business', 'developer', 'slides'],
+                        help='Specify the topic category')
 
-            # Génération et post
-            logger.info("Generating LinkedIn content")
-            content = generate_use_case.execute()
-            logger.info("Posting to LinkedIn")
-            result = post_use_case.execute(content)
-            print("Successfully posted to LinkedIn!")
-
-        elif platform == 'twitter':
-            # Twitter
-            twitter_gateway = TwitterAPI()
-            generate_use_case = GenerateTweetUseCase(openai_gateway)
-            post_use_case = PostTweetUseCase(twitter_gateway)
-
-            # Génération et post
-            logger.info("Generating tweet")
-            content = generate_use_case.execute()
-            logger.info("Posting to Twitter")
-            result = post_use_case.execute(content)
-            print("Successfully posted to Twitter!")
-
-        else:
-            raise ValueError(f"Unsupported platform: {platform}")
-
-    except Exception as e:
-        logger.error(f"Error posting to {platform}: {str(e)}")
-        raise
+    return parser
 
 
 def main():
     try:
-        # Configurer l'analyseur d'arguments
-        parser = argparse.ArgumentParser(description='Post content to social media platforms')
-        parser.add_argument('platform', choices=['facebook', 'linkedin', 'twitter'],
-                            help='The platform to post to')
-
         # Parser les arguments
+        parser = setup_parser()
         args = parser.parse_args()
 
         # Configuration de l'environnement
         if not setup_environment():
             raise ConfigurationError("Failed to setup environment")
 
-        # Poster sur la plateforme sélectionnée
-        post_to_platform(args.platform)
+        # Exécuter la commande
+        command = PostCommand()
+        result = command.execute(
+            platform=args.platform,
+            dry_run=args.dry_run,
+            topic=args.topic
+        )
+
+        # Afficher le résultat
+        if args.dry_run:
+            print("\nGenerated content:")
+            print("-" * 40)
+            print(result)
+            print("-" * 40)
+        else:
+            print(f"Successfully posted to {args.platform}!")
 
     except ConfigurationError as e:
         logger.error(f"Configuration error: {str(e)}")
