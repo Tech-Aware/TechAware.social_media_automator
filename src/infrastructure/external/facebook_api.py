@@ -10,25 +10,31 @@ from src.interfaces.facebook_gateway import FacebookGateway
 from src.domain.entities.facebook_publication import FacebookPublication
 from src.infrastructure.logging.logger import logger, log_method
 from src.domain.exceptions import FacebookError
-import os
+from src.infrastructure.config.environment_facebook import get_facebook_credentials
 
 
 class FacebookAPI(FacebookGateway):
     BASE_URL = "https://graph.facebook.com/v19.0"
-    PAGE_ID = "276164198921949"
 
     @log_method(logger)
     def __init__(self):
         """
         Initialize the FacebookAPI with token verification.
         """
-        self.access_token = os.getenv('FACEBOOK_ACCESS_TOKEN')
-        if not self.access_token:
-            raise FacebookError("Facebook access token not found in environment variables (FACEBOOK_ACCESS_TOKEN)")
+        try:
+            logger.debug("Loading Facebook credentials")
+            credentials = get_facebook_credentials()
+            self.access_token = credentials['access_token']
+            self.page_id = credentials['page_id']
+            logger.debug("Facebook credentials loaded successfully")
 
-        # Verify the token and get page access token
-        self.access_token = self._get_page_access_token()
-        logger.debug("Facebook credentials loaded and verified successfully")
+            # Verify the token and get page access token
+            self.access_token = self._get_page_access_token()
+            logger.debug("Facebook credentials verified successfully")
+        except Exception as e:
+            error_msg = f"Failed to initialize Facebook API: {str(e)}"
+            logger.error(error_msg)
+            raise FacebookError(error_msg)
 
     def _get_page_access_token(self):
         """
@@ -36,7 +42,7 @@ class FacebookAPI(FacebookGateway):
         """
         try:
             logger.debug("Attempting to get page access token")
-            url = f"{self.BASE_URL}/{self.PAGE_ID}"
+            url = f"{self.BASE_URL}/{self.page_id}"
             params = {
                 'fields': 'access_token',
                 'access_token': self.access_token
@@ -74,7 +80,7 @@ class FacebookAPI(FacebookGateway):
             logger.debug("Publication validation passed")
 
             # First, verify page access
-            verify_url = f"{self.BASE_URL}/{self.PAGE_ID}/feed"
+            verify_url = f"{self.BASE_URL}/{self.page_id}/feed"
             logger.debug(f"Verifying page access with URL: {verify_url}")
 
             # Complete payload

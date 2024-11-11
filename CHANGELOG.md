@@ -2,7 +2,7 @@
 
 ## [Unreleased]
 ### Fixed
-- Solved conflict in a test for linkedin publication
+- Changed how tokens are caught
 ## [1.0.0] - 2024-11-09
 ### Changed
 #### Core Infrastructure
