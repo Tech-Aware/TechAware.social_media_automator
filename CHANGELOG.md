@@ -4,6 +4,7 @@
 ### Added
 - Add feature for publish in specified linkedin, facebook or x platform
 ### Documentation
+- Add run for specified platform in Usage/Command Line Interface
 - Update changelog [skip ci]
 - Update run methode for developers
 ### Fixed
