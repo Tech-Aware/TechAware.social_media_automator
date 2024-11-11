@@ -1,8 +1,19 @@
 # Changelog
 
 ## [Unreleased]
+### Documentation
+- Fixing conflict in a merge
+- Update changelog [skip ci]
 ### Fixed
+#### Facebook Integration
 - Changed how tokens are caught
+#### API Integration
+- Cancel unnecessary import PyPDF
+#### LinkedIn Integration
+- Solved conflict in a test for linkedin publication
+### Other
+- Merge branch 'main' of https://github.com/Tech-Aware/TechAware.social_media_automator
+- Solved conflict into CHANGELOG.md
 ## [1.0.0] - 2024-11-09
 ### Changed
 #### Core Infrastructure
