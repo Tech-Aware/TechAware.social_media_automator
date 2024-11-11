@@ -1,8 +1,15 @@
 # Changelog
 
 ## [Unreleased]
+### Documentation
+- Update changelog [skip ci]
 ### Fixed
+#### API Integration
+- Cancel unnecessary import PyPDF
+#### LinkedIn Integration
 - Solved conflict in a test for linkedin publication
+### Other
+- Merge branch 'main' of https://github.com/Tech-Aware/TechAware.social_media_automator
 ## [1.0.0] - 2024-11-09
 ### Changed
 #### Core Infrastructure
