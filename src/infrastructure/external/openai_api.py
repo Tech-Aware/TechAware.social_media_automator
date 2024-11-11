@@ -6,7 +6,7 @@ import os
 from openai import OpenAI
 from src.interfaces.openai_gateway import OpenAIGateway
 from src.infrastructure.logging.logger import logger, log_method
-from src.infrastructure.config.environment import get_openai_credentials
+from src.infrastructure.config.environment import initialize_environment, get_openai_credentials
 from src.domain.exceptions import OpenAIError, ConfigurationError, TweetGenerationError
 from src.infrastructure.prompting.prompt_builder import PromptBuilder
 
@@ -15,9 +15,18 @@ class OpenAIAPI(OpenAIGateway):
     @log_method(logger)
     def __init__(self):
         try:
+            logger.debug("Initializing environment")
+            if not initialize_environment():
+                raise ConfigurationError("Failed to initialize environment")
+
             logger.debug("Loading OpenAI credentials")
             credentials = get_openai_credentials()
-            self.client = OpenAI(api_key=credentials['api_key'])
+
+            # Debug pour voir la clé récupérée
+            api_key = credentials['api_key']
+            logger.debug(f"Received API key starting with: {api_key[:10]}...")
+
+            self.client = OpenAI(api_key=api_key)
             self.prompt_builder = PromptBuilder()
             logger.debug("OpenAI client initialized successfully")
         except ConfigurationError as e:
