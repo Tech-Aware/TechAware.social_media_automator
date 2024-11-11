@@ -6,6 +6,8 @@
 - Add more details:\n
 #### Facebook Integration
 - Add feature for publish in specified linkedin, facebook or x platform
+### Changed
+- Changed GPT model
 ### Documentation
 - Add run for specified platform in Usage/Command Line Interface
 - Update changelog [skip ci]
@@ -15,6 +17,8 @@
 - Update in api credential, environment, cli and terminal launch
 #### Facebook Integration
 - Changed how tokens are caught
+### Other
+- Merge branch 'develop' of https://github.com/Tech-Aware/TechAware.social_media_automator into develop
 ## [1.0.0] - 2024-11-09
 ### Changed
 #### Core Infrastructure
