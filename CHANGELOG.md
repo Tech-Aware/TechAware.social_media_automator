@@ -11,6 +11,7 @@
 ### Changed
 - Changed GPT model
 ### Documentation
+- Add example command for platform and subject
 - Add run for specified platform in Usage/Command Line Interface
 - Update changelog [skip ci]
 - Update run methode for developers
