@@ -3,6 +3,7 @@
 ## [Unreleased]
 ### Documentation
 - Update changelog [skip ci]
+- Update run methode for developers
 ### Fixed
 #### API Integration
 - Update in api credential, environment, cli and terminal launch
