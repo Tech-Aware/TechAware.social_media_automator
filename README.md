@@ -187,7 +187,7 @@ ODOO_PASSWORD=your_password
 ### Command Line Interface
 ```bash
 # Run the program
-python -c "from src.presentation.cli import CLI; CLI().menu()"
+python .\main.py             
 # When prompted:
 # - Enter 'y' to choose blog article creation (coming soon)
 # - Enter 'n' to automatically generate and post content to all social media platforms
