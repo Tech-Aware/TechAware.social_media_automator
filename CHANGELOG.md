@@ -2,6 +2,9 @@
 
 ## [Unreleased]
 ### Added
+#### Core Infrastructure
+- Add more details:\n
+#### Facebook Integration
 - Add feature for publish in specified linkedin, facebook or x platform
 ### Documentation
 - Add run for specified platform in Usage/Command Line Interface
