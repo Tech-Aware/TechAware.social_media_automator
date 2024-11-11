@@ -19,16 +19,18 @@ from src.infrastructure.config.environment_linkedin import get_linkedin_credenti
 from src.domain.exceptions import ConfigurationError
 
 
-@patch.dict(os.environ, {
-    'LINKEDIN_CLIENT_ID': 'fake_client_id',
-    'LINKEDIN_CLIENT_SECRET': 'fake_client_secret',
-    'LINKEDIN_ACCESS_TOKEN': 'fake_access_token',
-    'LINKEDIN_USER_ID': 'fake_user_id'
-}, clear=True)
-def test_get_linkedin_credentials():
+@patch('os.getenv')
+def test_get_linkedin_credentials(mock_getenv):
     """
     Test the retrieval of LinkedIn credentials when all environment variables are set.
     """
+    mock_getenv.side_effect = lambda x: {
+        'LINKEDIN_CLIENT_ID': 'fake_client_id',
+        'LINKEDIN_CLIENT_SECRET': 'fake_client_secret',
+        'LINKEDIN_ACCESS_TOKEN': 'fake_access_token',
+        'LINKEDIN_USER_ID': 'fake_user_id'
+    }.get(x)
+
     credentials = get_linkedin_credentials()
     assert credentials == {
         'client_id': 'fake_client_id',
@@ -44,38 +46,43 @@ def test_get_linkedin_credentials():
     'LINKEDIN_ACCESS_TOKEN',
     'LINKEDIN_USER_ID'
 ])
-def test_get_linkedin_credentials_missing_env(missing_var):
+@patch('os.getenv')
+def test_get_linkedin_credentials_missing_env(mock_getenv, missing_var):
     """
     Test the behavior when a required LinkedIn environment variable is missing.
     """
-    env_vars = {
-        'LINKEDIN_CLIENT_ID': 'fake_client_id',
-        'LINKEDIN_CLIENT_SECRET': 'fake_client_secret',
-        'LINKEDIN_ACCESS_TOKEN': 'fake_access_token',
-        'LINKEDIN_USER_ID': 'fake_user_id'
-    }
-    del env_vars[missing_var]
+    def mock_getenv_with_missing(var_name):
+        if var_name == missing_var:
+            return None
+        return {
+            'LINKEDIN_CLIENT_ID': 'fake_client_id',
+            'LINKEDIN_CLIENT_SECRET': 'fake_client_secret',
+            'LINKEDIN_ACCESS_TOKEN': 'fake_access_token',
+            'LINKEDIN_USER_ID': 'fake_user_id'
+        }.get(var_name)
 
-    with patch.dict(os.environ, env_vars, clear=True):
-        with pytest.raises(ConfigurationError) as exc_info:
-            get_linkedin_credentials()
+    mock_getenv.side_effect = mock_getenv_with_missing
 
-        assert str(exc_info.value) == f"Missing environment variable: {missing_var}"
+    with pytest.raises(ConfigurationError) as exc_info:
+        get_linkedin_credentials()
+    assert f"Missing environment variable: {missing_var}" in str(exc_info.value)
 
 
 @patch('src.infrastructure.config.environment_linkedin.load_dotenv')
-def test_load_dotenv_called(mock_load_dotenv):
+@patch('os.getenv')
+def test_load_dotenv_called(mock_getenv, mock_load_dotenv):
     """
     Test that load_dotenv is called when getting LinkedIn credentials.
     """
-    with patch.dict(os.environ, {
+    mock_getenv.side_effect = lambda x: {
         'LINKEDIN_CLIENT_ID': 'fake_client_id',
         'LINKEDIN_CLIENT_SECRET': 'fake_client_secret',
         'LINKEDIN_ACCESS_TOKEN': 'fake_access_token',
         'LINKEDIN_USER_ID': 'fake_user_id'
-    }, clear=True):
-        get_linkedin_credentials()
-        mock_load_dotenv.assert_called_once()
+    }.get(x)
+
+    get_linkedin_credentials()
+    mock_load_dotenv.assert_called_once()
 
 
 if __name__ == "__main__":

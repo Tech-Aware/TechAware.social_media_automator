@@ -6,7 +6,7 @@ TechAware Social Media Automator is a sophisticated content generation and publi
 ## Features
 - Multi-platform content generation and publishing
 - Platform-specific content optimization
-- Automated cgit push origin developontent scheduling
+- Automated content scheduling
 - Brand voice consistency
 - SEO optimization for blog content
 - Content scraping and analysis
@@ -18,8 +18,6 @@ TechAware Social Media Automator is a sophisticated content generation and publi
 automator/
 ├── docs/
 ├── resources/
-│   ├── knowledge/
-│   └── prompts/
 ├── src/
 │   ├── domain/
 │   │   ├── entities/
@@ -54,7 +52,6 @@ automator/
 │   │   │   └── prompt_builder.py                   # Implemented
 │   │   └── utils/
 │   │       ├── __init__.py
-│   │       └── file_reader.py
 │   ├── interfaces/
 │   │   ├── __init__.py
 │   │   ├── twitter_gateway.py
@@ -131,7 +128,7 @@ automator/
 
 1. Clone the repository
 ```bash
-git clone [repository-url]
+git clone [https://github.com/Tech-Aware/TechAware.social_media_automator.git]
 cd automator
 ```
 
@@ -189,17 +186,11 @@ ODOO_PASSWORD=your_password
 
 ### Command Line Interface
 ```bash
-# Generate and post a tweet
-python -m src.presentation.cli twitter
-
-# Generate and post a Facebook publication
-python -m src.presentation.cli facebook
-
-# Generate and post a LinkedIn post
-python -m src.presentation.cli linkedin
-
-# Generate and post a blog article (Coming soon)
-python -m src.presentation.cli blog
+# Run the program
+python -c "from src.presentation.cli import CLI; CLI().menu()"
+# When prompted:
+# - Enter 'y' to choose blog article creation (coming soon)
+# - Enter 'n' to automatically generate and post content to all social media platforms
 ```
 
 ## Development
@@ -208,9 +199,6 @@ python -m src.presentation.cli blog
 ```bash
 # Run all tests
 python -m pytest
-
-# Run tests with coverage
-python -m pytest --cov=src
 
 # Run specific test file
 python -m pytest tests/path/to/test_file.py
@@ -274,11 +262,11 @@ isort src tests
 This project is licensed under the MIT License - see the LICENSE file for details.
 
 ## Contact
-Project Link: [https://github.com/yourusername/automator](https://github.com/yourusername/automator)
+Project Link: https://github.com/Tech-Aware/TechAware.social_media_automator.git
 
 ## Acknowledgments
-- OpenAI GPT Models
-- Twitter API
-- Facebook Graph API
-- LinkedIn API
-- Odoo API
+- OpenAI GPT Models: https://platform.openai.com/docs/api-reference/introduction
+- X (formerly Twitter) API: https://developer.x.com/en/docs/x-api/getting-started/about-x-api
+- Facebook Graph API: https://developers.facebook.com/docs/graph-api/ 
+- LinkedIn API: https://learn.microsoft.com/en-us/linkedin/
+- Odoo API: https://www.odoo.com/documentation/18.0/developer.html

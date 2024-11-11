@@ -73,14 +73,14 @@ class PromptBuilder(PromptBuilderGateway):
                 'context': 'Les développeurs débutants ou en reconversion éprouvent souvent des difficultés à accéder à des projets réels pour acquérir de l\'expérience pratique.',
                 'problem': 'Sans expérience concrète, il est difficile pour eux d\'améliorer leurs compétences et de constituer un portfolio convaincant.',
                 'solution': 'Tech Aware propose aux développeurs des missions concrètes, leur permettant de mettre en pratique leurs compétences, d\'accumuler de l\'expérience, et de se construire un portfolio solide.',
-                'link': 'https://www.techaware.net/pour-les-développeurs'
+                'link': 'https://www.techaware.net/pour-les-developpeurs'
             },
             {
                 'subject': 'Opportunités de freelance',
                 'context': 'Beaucoup de développeurs souhaitent travailler en freelance pour bénéficier de flexibilité et pour gérer eux-mêmes leur carrière.',
                 'problem': 'Le manque d\'expérience et de réseau rend difficile la recherche de clients et la gestion d\'une activité indépendante.',
                 'solution': 'Tech Aware aide les développeurs à se préparer à une activité de freelance en leur fournissant des missions pratiques et des conseils, facilitant ainsi leur transition vers une carrière indépendante.',
-                'link': 'https://www.techaware.net/pour-les-développeurs'
+                'link': 'https://www.techaware.net/pour-les-developpeurs'
             },
             {
                 'subject': 'Mentorat personnalisé',
@@ -94,7 +94,7 @@ class PromptBuilder(PromptBuilderGateway):
                 'context': 'Les développeurs en début de carrière ou en reconversion manquent parfois de confiance en leurs compétences, ce qui peut les décourager.',
                 'problem': 'Ce manque de confiance peut les freiner dans leur progression et les empêcher de postuler à des projets ou des postes pour lesquels ils seraient pourtant qualifiés.',
                 'solution': 'Grâce aux missions concrètes et au mentorat offert par Tech Aware, les développeurs peuvent renforcer leur confiance en voyant leur travail valorisé et en recevant des retours positifs.',
-                'link': 'https://www.techaware.net/pour-les-développeurs'
+                'link': 'https://www.techaware.net/pour-les-developpeurs'
             },
             {
                 'subject': 'Formation continue',

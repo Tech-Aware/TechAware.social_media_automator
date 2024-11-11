@@ -1,8 +1,9 @@
 # tests/infrastructure/external/test_openai_api.py
 
 """
-Ce module contient les tests unitaires pour la classe OpenAIAPI
-définie dans src.infrastructure.external.openai_api.
+This module contains unit tests for the OpenAIAPI class.
+It tests the initialization of the API client and content generation
+functionality, including error handling and response validation.
 """
 
 import sys
@@ -35,52 +36,32 @@ def test_openai_api_initialization_error(mock_get_credentials):
 
 
 @patch('src.infrastructure.external.openai_api.OpenAI')
-@patch('os.path.exists')
-@patch('os.listdir')
-@patch('src.infrastructure.external.openai_api.OpenAIAPI.read_pdf')
-@patch('random.choices')
-def test_generate_tweet(mock_random_choices, mock_read_pdf, mock_listdir, mock_exists, mock_openai):
-    """Test successful generation of content."""
-    # Mock filesystem operations
-    mock_exists.return_value = True
-    mock_listdir.return_value = ['UPPERguideline.pdf', 'pageEntreprise.pdf']
-    mock_read_pdf.return_value = "mock content"
-
-    # Mock random choice
-    mock_random_choices.return_value = ["https://www.techaware.net/pour-les-entreprises"]
-
-    # Mock OpenAI response
+def test_generate_success(mock_openai):
+    """Test successful content generation."""
+    # Configure mock response
     mock_client = MagicMock()
     mock_openai.return_value = mock_client
     mock_response = MagicMock()
     mock_response.choices[0].message.content = """
-    <social_media_post>Generated tweet content</social_media_post>
+    <social_media_post>Generated content</social_media_post>
     """
     mock_client.chat.completions.create.return_value = mock_response
 
     api = OpenAIAPI()
     result = api.generate("Test prompt")
 
-    assert result == "Generated tweet content"
-    mock_client.chat.completions.create.assert_called_once()
+    assert result == "Generated content"
+    mock_client.chat.completions.create.assert_called_once_with(
+        model="gpt-4-turbo-preview",
+        messages=[
+            {"role": "system", "content": "Test prompt"}
+        ]
+    )
 
 
 @patch('src.infrastructure.external.openai_api.OpenAI')
-@patch('os.path.exists')
-@patch('os.listdir')
-@patch('src.infrastructure.external.openai_api.OpenAIAPI.read_pdf')
-@patch('random.choices')
-def test_generate_tweet_error(mock_random_choices, mock_read_pdf, mock_listdir, mock_exists, mock_openai):
-    """Test error handling during content generation."""
-    # Mock filesystem operations
-    mock_exists.return_value = True
-    mock_listdir.return_value = ['UPPERguideline.pdf', 'pageEntreprise.pdf']
-    mock_read_pdf.return_value = "mock content"
-
-    # Mock random choice
-    mock_random_choices.return_value = ["https://www.techaware.net/pour-les-entreprises"]
-
-    # Mock API error
+def test_generate_api_error(mock_openai):
+    """Test handling of API errors during generation."""
     mock_client = MagicMock()
     mock_openai.return_value = mock_client
     mock_client.chat.completions.create.side_effect = Exception("API Error")
@@ -88,25 +69,12 @@ def test_generate_tweet_error(mock_random_choices, mock_read_pdf, mock_listdir, 
     api = OpenAIAPI()
     with pytest.raises(OpenAIError) as exc_info:
         api.generate("Test prompt")
-    assert "API Error" in str(exc_info.value)
+    assert "Content generation failed: API Error" in str(exc_info.value)
 
 
 @patch('src.infrastructure.external.openai_api.OpenAI')
-@patch('os.path.exists')
-@patch('os.listdir')
-@patch('src.infrastructure.external.openai_api.OpenAIAPI.read_pdf')
-@patch('random.choices')
-def test_generate_invalid_response_format(mock_random_choices, mock_read_pdf, mock_listdir, mock_exists, mock_openai):
+def test_generate_invalid_response_format(mock_openai):
     """Test handling of invalid response format."""
-    # Mock filesystem operations
-    mock_exists.return_value = True
-    mock_listdir.return_value = ['UPPERguideline.pdf', 'pageEntreprise.pdf']
-    mock_read_pdf.return_value = "mock content"
-
-    # Mock random choice
-    mock_random_choices.return_value = ["https://www.techaware.net/pour-les-entreprises"]
-
-    # Mock response without social_media_post tags
     mock_client = MagicMock()
     mock_openai.return_value = mock_client
     mock_response = MagicMock()
@@ -116,25 +84,12 @@ def test_generate_invalid_response_format(mock_random_choices, mock_read_pdf, mo
     api = OpenAIAPI()
     with pytest.raises(OpenAIError) as exc_info:
         api.generate("Test prompt")
-    assert "Le contenu généré ne contient pas les balises" in str(exc_info.value)
+    assert "Generated content does not contain social_media_post tags" in str(exc_info.value)
 
 
 @patch('src.infrastructure.external.openai_api.OpenAI')
-@patch('os.path.exists')
-@patch('os.listdir')
-@patch('src.infrastructure.external.openai_api.OpenAIAPI.read_pdf')
-@patch('random.choices')
-def test_generate_empty_response(mock_random_choices, mock_read_pdf, mock_listdir, mock_exists, mock_openai):
+def test_generate_empty_response(mock_openai):
     """Test handling of empty response."""
-    # Mock filesystem operations
-    mock_exists.return_value = True
-    mock_listdir.return_value = ['UPPERguideline.pdf', 'pageEntreprise.pdf']
-    mock_read_pdf.return_value = "mock content"
-
-    # Mock random choice
-    mock_random_choices.return_value = ["https://www.techaware.net/pour-les-entreprises"]
-
-    # Mock empty response
     mock_client = MagicMock()
     mock_openai.return_value = mock_client
     mock_response = MagicMock()
@@ -144,7 +99,26 @@ def test_generate_empty_response(mock_random_choices, mock_read_pdf, mock_listdi
     api = OpenAIAPI()
     with pytest.raises(OpenAIError) as exc_info:
         api.generate("Test prompt")
-    assert "Le contenu généré est vide" in str(exc_info.value)
+    assert "Generated content is empty" in str(exc_info.value)
+
+
+@patch('src.infrastructure.external.openai_api.OpenAI')
+def test_response_cleanup(mock_openai):
+    """Test cleanup of generated content."""
+    mock_client = MagicMock()
+    mock_openai.return_value = mock_client
+    mock_response = MagicMock()
+    mock_response.choices[0].message.content = """
+    <social_media_post>**Bold Text**. </social_media_post>
+    """
+    mock_client.chat.completions.create.return_value = mock_response
+
+    api = OpenAIAPI()
+    result = api.generate("Test prompt")
+
+    assert result == "Bold Text"
+    assert "**" not in result
+    assert not result.endswith(".")
 
 
 if __name__ == "__main__":
