@@ -1,40 +1,37 @@
 # Changelog
 
 ## [Unreleased]
-### Changed
-- Change url for developer without 'é'
-### Documentation
-#### API Integration
-- Add api aknolewdment url
-- Add documentation for API, implementation and contributong according to readme.md
-#### Core Infrastructure
-- Cancel file and requirements
-- Update changelog [skip ci]
 ### Fixed
-- Fixing test failures
-### Other
-#### Core Infrastructure
-- Merge branch 'develop' of https://github.com/Tech-Aware/TechAware.social_media_automator into develop
-#### API Integration
-- Refactor-openai_api): changed logic according to prompt builder implentation
-### Testing
-- Fix retry behavior test for long tweets
+- Solved conflict in a test for linkedin publication
 ## [1.0.0] - 2024-11-09
 ### Changed
+#### Core Infrastructure
+- Add better output format
+- Add semantic versioning into changelo generation
+- Change url for developer without 'é'
 #### Facebook Integration
 - Add separation, new test and adjustment:
 #### LinkedIn Integration
 - Add debug message for improve clarity
-#### Core Infrastructure
-- Add better output format
-- Add semantic versioning into changelo generation
 ### Documentation
+#### Core Infrastructure
+- Cancel file and requirements
 - Update changelog [skip ci]
+#### API Integration
+- Add api aknolewdment url
+- Add documentation for API, implementation and contributong according to readme.md
 ### Fixed
 - Add bug correction, adjustment in assertion... ALL TESTS ARE OK
+- Fixing test failures
 ### Other
+#### Core Infrastructure
 - Add assertion adjustment and mock response
+- Merge branch 'develop' of https://github.com/Tech-Aware/TechAware.social_media_automator into develop
 - Merge branch 'develop' of https://github.com/Tech-Aware/TechAware.social_media_automator into develop Retrieve changelog
+#### API Integration
+- Refactor-openai_api): changed logic according to prompt builder implentation
+### Testing
+- Fix retry behavior test for long tweets
 ## [0.3.0] - 2024-10-26
 ### Added
 #### Facebook Integration
