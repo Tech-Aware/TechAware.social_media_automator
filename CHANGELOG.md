@@ -6,6 +6,9 @@
 ### Fixed
 - Update GPT model name and enhance documentation
 ### Testing
+#### Core Infrastructure
+- Adapt assertions for french language prompts
+#### Facebook Integration
 - Fix initialization and error handling tests
 ## [1.0.0] - 2024-11-09
 ### Added
