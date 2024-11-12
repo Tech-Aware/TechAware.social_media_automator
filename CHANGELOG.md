@@ -1,6 +1,9 @@
 # Changelog
 
 ## [Unreleased]
+### Testing
+- Fix initialization and error handling tests
+## [1.0.0] - 2024-11-09
 ### Added
 #### Core Infrastructure
 - Add more details:\n
@@ -9,21 +12,8 @@
 #### Facebook Integration
 - Add feature for publish in specified linkedin, facebook or x platform
 ### Changed
-- Changed GPT model
-### Documentation
-- Add example command for platform and subject
-- Add run for specified platform in Usage/Command Line Interface
-- Update changelog [skip ci]
-- Update run methode for developers
-### Fixed
 #### API Integration
-- Update in api credential, environment, cli and terminal launch
-#### Facebook Integration
-- Changed how tokens are caught
-### Other
-- Merge branch 'develop' of https://github.com/Tech-Aware/TechAware.social_media_automator into develop
-## [1.0.0] - 2024-11-09
-### Changed
+- Changed GPT model
 #### Core Infrastructure
 - Add better output format
 - Add semantic versioning into changelo generation
@@ -34,12 +24,20 @@
 - Add debug message for improve clarity
 ### Documentation
 #### Core Infrastructure
+- Add example command for platform and subject
+- Add run for specified platform in Usage/Command Line Interface
 - Cancel file and requirements
 - Update changelog [skip ci]
+- Update run methode for developers
 #### API Integration
 - Add api aknolewdment url
 - Add documentation for API, implementation and contributong according to readme.md
 ### Fixed
+#### API Integration
+- Update in api credential, environment, cli and terminal launch
+#### Facebook Integration
+- Changed how tokens are caught
+#### Core Infrastructure
 - Add bug correction, adjustment in assertion... ALL TESTS ARE OK
 - Fixing test failures
 ### Other
