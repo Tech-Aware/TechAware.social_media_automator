@@ -1,6 +1,10 @@
 # Changelog
 
 ## [Unreleased]
+### Documentation
+- Update changelog [skip ci]
+### Fixed
+- Update GPT model name and enhance documentation
 ### Testing
 - Fix initialization and error handling tests
 ## [1.0.0] - 2024-11-09
