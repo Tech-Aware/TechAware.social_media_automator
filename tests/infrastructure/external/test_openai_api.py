@@ -52,7 +52,7 @@ def test_generate_success(mock_openai):
 
     assert result == "Generated content"
     mock_client.chat.completions.create.assert_called_once_with(
-        model="gpt-4-turbo-preview",
+        model="gpt-4-turbo",
         messages=[
             {"role": "system", "content": "Test prompt"}
         ]

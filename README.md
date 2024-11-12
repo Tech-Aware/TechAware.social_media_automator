@@ -187,10 +187,22 @@ ODOO_PASSWORD=your_password
 ### Command Line Interface
 ```bash
 # Run the program
-python -c "from src.presentation.cli import CLI; CLI().menu()"
+python .\main.py             
 # When prompted:
 # - Enter 'y' to choose blog article creation (coming soon)
 # - Enter 'n' to automatically generate and post content to all social media platforms
+
+# Run the program for a specified platform between linkedin, facebook and twitter(x)
+python .\post_in.py facebook
+
+python .\post_in.py linkedin
+
+python .\post_in.py twitter
+
+# run the program for the specified platform with a specified parameter 
+python .\post_in.py facebook --dry-run # to generate without publish
+
+python .\post_in.py linkedin --topic business # to specified a subject
 ```
 
 ## Development

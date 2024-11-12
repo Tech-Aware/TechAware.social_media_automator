@@ -1,12 +1,13 @@
-# main.py
+# post_in.py
 
 import os
 import sys
-from pathlib import Path
 from dotenv import load_dotenv, find_dotenv
-from src.presentation.cli import CLI
+from pathlib import Path
+import argparse
 from src.infrastructure.logging.logger import get_logger
 from src.domain.exceptions import ConfigurationError, AutomatorError
+from src.presentation.post_command import PostCommand
 
 logger = get_logger(__name__)
 
@@ -42,25 +43,68 @@ def setup_environment():
         return False
 
 
+def setup_parser():
+    """Configure l'analyseur d'arguments en ligne de commande"""
+    parser = argparse.ArgumentParser(description='Post content to social media platforms')
+
+    parser.add_argument('platform',
+                        choices=['facebook', 'linkedin', 'twitter'],
+                        help='The platform to post to')
+
+    parser.add_argument('--debug',
+                        action='store_true',
+                        help='Enable debug logging')
+
+    parser.add_argument('--dry-run',
+                        action='store_true',
+                        help='Generate content without posting')
+
+    parser.add_argument('--topic',
+                        choices=['business', 'developer', 'slides'],
+                        help='Specify the topic category')
+
+    return parser
+
+
 def main():
     try:
-        # Configuration initiale
-        logger.info("Starting Automator application")
+        # Parser les arguments
+        parser = setup_parser()
+        args = parser.parse_args()
+
+        # Configuration de l'environnement
         if not setup_environment():
             raise ConfigurationError("Failed to setup environment")
 
-        cli = CLI()
-        cli.menu()
-        logger.info("Automator application completed successfully")
+        # Exécuter la commande
+        command = PostCommand()
+        result = command.execute(
+            platform=args.platform,
+            dry_run=args.dry_run,
+            topic=args.topic
+        )
+
+        # Afficher le résultat
+        if args.dry_run:
+            print("\nGenerated content:")
+            print("-" * 40)
+            print(result)
+            print("-" * 40)
+        else:
+            print(f"Successfully posted to {args.platform}!")
+
     except ConfigurationError as e:
         logger.error(f"Configuration error: {str(e)}")
         print(f"Configuration error: {str(e)}")
+        sys.exit(1)
     except AutomatorError as e:
         logger.error(f"Automator error: {str(e)}")
         print(f"An error occurred: {str(e)}")
+        sys.exit(1)
     except Exception as e:
         logger.error(f"An unexpected error occurred: {str(e)}", exc_info=True)
         print(f"An unexpected error occurred. Please check the logs for more details.")
+        sys.exit(1)
 
 
 if __name__ == "__main__":

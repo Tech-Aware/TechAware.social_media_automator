@@ -13,6 +13,7 @@ from src.use_cases.post_linkedin import PostLinkedInUseCase
 from src.use_cases.generate_tweet import GenerateTweetUseCase
 from src.use_cases.generate_facebook_publication import GenerateFacebookPublicationUseCase
 from src.use_cases.generate_linkedin_post import GenerateLinkedInPostUseCase
+from src.infrastructure.config.environment import initialize_environment
 from src.infrastructure.external.twitter_api import TwitterAPI
 from src.infrastructure.external.facebook_api import FacebookAPI
 from src.infrastructure.external.linkedin_api import LinkedInAPI
@@ -35,6 +36,13 @@ class CLI:
             AutomatorError: If initialization of any component fails
         """
         try:
+            # Initialiser l'environnement avant toute autre chose
+            logger.info("Initializing environment")
+            if not initialize_environment():
+                raise ConfigurationError("Failed to initialize environment")
+
+            logger.info("Environment initialized successfully")
+
             # Initialize gateways
             logger.debug("Creating API instances")
             twitter_gateway = TwitterAPI()

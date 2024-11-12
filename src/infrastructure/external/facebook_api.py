@@ -5,6 +5,7 @@ This module implements the FacebookAPI class with extensive debugging
 and token type verification.
 """
 
+import os
 import requests
 from src.interfaces.facebook_gateway import FacebookGateway
 from src.domain.entities.facebook_publication import FacebookPublication
