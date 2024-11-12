@@ -2,9 +2,12 @@
 
 ## [Unreleased]
 ### Documentation
+- Solved conflict in fusion
 - Update changelog [skip ci]
 ### Fixed
 - Update GPT model name and enhance documentation
+### Other
+- Merge branch 'develop' into main with tests and functional first release
 ### Testing
 #### Core Infrastructure
 - Adapt assertions for french language prompts
@@ -34,6 +37,7 @@
 - Add example command for platform and subject
 - Add run for specified platform in Usage/Command Line Interface
 - Cancel file and requirements
+- Fixing conflict in a merge
 - Update changelog [skip ci]
 - Update run methode for developers
 #### API Integration
@@ -41,9 +45,12 @@
 - Add documentation for API, implementation and contributong according to readme.md
 ### Fixed
 #### API Integration
+- Cancel unnecessary import PyPDF
 - Update in api credential, environment, cli and terminal launch
 #### Facebook Integration
 - Changed how tokens are caught
+#### LinkedIn Integration
+- Solved conflict in a test for linkedin publication
 #### Core Infrastructure
 - Add bug correction, adjustment in assertion... ALL TESTS ARE OK
 - Fixing test failures
@@ -52,6 +59,8 @@
 - Add assertion adjustment and mock response
 - Merge branch 'develop' of https://github.com/Tech-Aware/TechAware.social_media_automator into develop
 - Merge branch 'develop' of https://github.com/Tech-Aware/TechAware.social_media_automator into develop Retrieve changelog
+- Merge branch 'main' of https://github.com/Tech-Aware/TechAware.social_media_automator
+- Solved conflict into CHANGELOG.md
 #### API Integration
 - Refactor-openai_api): changed logic according to prompt builder implentation
 ### Testing
