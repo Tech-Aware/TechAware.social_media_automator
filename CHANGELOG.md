@@ -1,6 +1,8 @@
 # Changelog
 
 ## [Unreleased]
+### Added
+- Implement PostCommand test suite
 ### Documentation
 - Update changelog [skip ci]
 ### Fixed
